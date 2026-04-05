@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  # Servicio A 'El cerebro' (Flask)
+  app:
+    build: ./app
+    container_name: flask_backend
+    restart: always
+    env_file:
+      - .env
+    # No abrimos puertos al exterior, solo vive en la red interna
+    networks:
+      - uam_network
+
+  # Servicio B: 'El Escudo' (Nginx)
+  nginx:
+    image: nginx:latest
+    container_name: nginx_proxy
+    restart: always
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d # Conectamos el contenedor con el archivo de configuración
+      - ./app/static:/app/static # Para que Nginx acceda a las fotos directamente1
+    ports:
+      - "8000:8000" # Mapeamos el puerto 80 (el del ordenador) real al 80 del contenedor (virtual)
+    depends_on:
+      - app
+    networks:
+      - uam_network
+
+  # Servicio C: Base de datos en memoria para sesiones seguras
+  redis:
+    image: redis:alpine
+    container_name: redis_session
+    restart: always
+    # Activa el modo AOF
+    command: ["redis-server", "--appendonly", "yes"]
+    # Mapea la base de datos de la RAM al disco duro real
+    volumes:
+      - ./redis_data:/data
+    networks:
+      - uam_network
+
+networks:
+  uam_network:
+    driver: bridge # Switch virtual dentro del ordenador
+    # Se pueden comunicar app y nginx sin saber ips gracias al DNS de Docker

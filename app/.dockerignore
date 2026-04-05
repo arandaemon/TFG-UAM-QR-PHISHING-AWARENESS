@@ -1,0 +1,5 @@
+.env
+.git
+*.pyc
+__pycache__/
+redis_data/

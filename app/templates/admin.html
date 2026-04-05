@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Control SEIF - Campaña UAM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Extraídos del logo SEIF */
+            --bg-color: #050505;       /* Negro profundo para el fondo */
+            --card-bg: #121212;        /* Gris muy oscuro para contraste de tarjetas */
+            --text-main: #ffffff;      /* Blanco puro para lectura principal */
+            --text-muted: #8a8d91;     /* Gris para textos secundarios */
+            --accent-cyan: #00ffff;    /* Cian del efecto glitch */
+            --accent-magenta: #ff007f; /* Magenta del efecto glitch */
+        }
+
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--bg-color); 
+            color: var(--text-main); 
+            margin: 0; 
+            padding: 0;
+        }
+
+        /* --- BARRA SUPERIOR (HEADER) --- */
+        header {
+            background: #000000;
+            color: var(--text-main);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--accent-magenta);
+            box-shadow: 0 4px 15px rgba(255, 0, 127, 0.1);
+        }
+
+        header h1 { margin: 0; font-size: 1.2rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
+
+        .btn-logout {
+            background: rgba(0, 255, 255, 0.1);
+            color: var(--accent-cyan);
+            border: 1px solid var(--accent-cyan);
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+        }
+        
+        .btn-logout:hover { 
+            background: var(--accent-cyan); 
+            color: #000;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+
+        .container { max-width: 1100px; margin: 30px auto; padding: 0 20px; }
+
+        /* --- WIDGETS DE RESUMEN (KPIs) --- */
+        .summary-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .kpi-card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 5px solid var(--accent-magenta);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+
+        .kpi-card span { color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; font-weight: 700; }
+        .kpi-card div { font-size: 1.8rem; font-weight: 700; margin-top: 5px; color: var(--text-main); }
+
+        /* --- GRID DE FACULTADES --- */
+        .facultades-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+        }
+
+        .facultad-card { 
+            background: var(--card-bg); 
+            border-radius: 12px; 
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5); 
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 1px solid #222;
+        }
+        .facultad-card:hover { 
+            transform: translateY(-5px); 
+            box-shadow: 0 6px 15px rgba(0, 255, 255, 0.1);
+        }
+
+        .facultad-header {
+            background: #1a1a1a;
+            padding: 15px 20px;
+            border-bottom: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .facultad-header h2 { margin: 0; font-size: 1rem; color: var(--text-main); }
+
+        .status-pill {
+            background: rgba(0, 255, 255, 0.1);
+            color: var(--accent-cyan);
+            border: 1px solid var(--accent-cyan);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 700;
+        }
+
+        table { width: 100%; border-collapse: collapse; }
+        th, td { text-align: left; padding: 15px 20px; border-bottom: 1px solid #222; }
+        th { background: var(--card-bg); color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; }
+        
+        .count-circle {
+            background: rgba(255, 0, 127, 0.1);
+            color: var(--accent-magenta);
+            border: 1px solid var(--accent-magenta);
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .logo-seif {
+            width: 75px;
+            height: auto;
+            display: block;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-bottom: 30px;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <img src="{{ url_for('static', filename='img/logo.jpg') }}" alt="Logo Asociación SEIF" class="logo-seif">
+        <h1>Dashboard de Auditoría - SEIF</h1>
+        <a href="#" id="btn-logout" class="btn-logout">Cerrar Sesión</a>
+    </header>
+
+    <div class="container">
+        <div class="summary-row">
+            <div class="kpi-card" style="border-left-color: var(--accent-cyan);">
+                <span>Impactos Totales</span>
+                <div id="total-impacts">0</div>
+            </div>
+            <div class="kpi-card">
+                <span>Facultades Activas</span>
+                <div>{{ stats|length }}</div>
+            </div>
+            <div class="kpi-card" style="border-left-color: var(--accent-cyan);">
+                <span>Sistema de Persistencia</span>
+                <div style="font-size: 1rem; color: var(--accent-cyan);">Redis AOF Engine</div>
+            </div>
+        </div>
+
+        <div class="facultades-grid">
+            {% if not stats %}
+                <div class="facultad-card" style="grid-column: 1/-1; padding: 40px; text-align: center;">
+                    <p style="color: var(--text-muted);">Esperando primer impacto...</p>
+                </div>
+            {% endif %}
+
+            {% for facultad, ubicaciones in stats.items() %}
+            <div class="facultad-card">
+                <div class="facultad-header">
+                    <h2>{{ facultad }}</h2>
+                    <span class="status-pill">MONITORIZANDO</span>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Ubicación</th>
+                            <th style="text-align: right;">Impactos</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for lugar, cuenta in ubicaciones.items() %}
+                        <tr>
+                            <td>{{ lugar | capitalize }}</td>
+                            <td style="display: flex; justify-content: flex-end;">
+                                <div class="count-circle data-val">{{ cuenta }}</div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2026 Asociación SEIF<br>
+        Entorno de investigación controlado. Prohibido el uso no autorizado.
+    </footer>
+
+    <script>
+        let total = 0;
+        document.querySelectorAll('.data-val').forEach(el => {
+            total += parseInt(el.innerText);
+        });
+        document.getElementById('total-impacts').innerText = total;
+
+        // Lógica para cerrar sesión sobreescribiendo la caché de Basic Auth
+        document.getElementById('btn-logout').addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Usamos XMLHttpRequest porque permite pasar credenciales explícitas en el método open().
+            // Esto fuerza al navegador a reemplazar tu contraseña real por "logout".
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", '{{ url_for("admin_cerrar_sesion") }}', true, "logout", "logout");
+            xhr.send(null);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    document.body.innerHTML = '<div style="text-align:center; margin-top:20vh; color:var(--text-main);"><h2>Sesión cerrada</h2><p style="color:var(--text-muted);">Las credenciales han sido invalidadas. Por tu seguridad, <b>cierra esta pestaña</b>.</p></div>';
+                }
+            };
+        });
+    </script>
+</body>
+</html>

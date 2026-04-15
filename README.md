@@ -96,8 +96,8 @@ chmod +x start.sh
 ```
 
 ### 4. Uso y Acceso
-* **Simulación de Escaneo (Víctima):** Accede a `http://<IP_SERVIDOR>:8000/login/<uuid>` (Sustituye `<uuid>` por un hash válido de `app/rutas.py`).
-* **Panel de Auditoría (Admin):** Accede a `http://<IP_SERVIDOR>:8000/<ADMIN_PATH>` (Definido en el `.env`) y utiliza las credenciales Basic Auth.
+* **Simulación de Escaneo (Víctima):** Accede a `http://<IP_SERVIDOR>/login/<uuid>` (Sustituye `<uuid>` por un hash válido de `app/rutas.py`).
+* **Panel de Auditoría (Admin):** Accede a `http://<IP_SERVIDOR>/<ADMIN_PATH>` (Definido en el `.env`) y utiliza las credenciales Basic Auth.
 
 ---
 

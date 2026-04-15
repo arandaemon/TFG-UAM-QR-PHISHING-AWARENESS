@@ -21,7 +21,7 @@ services:
       - ./nginx/conf.d:/etc/nginx/conf.d # Conectamos el contenedor con el archivo de configuración
       - ./app/static:/app/static # Para que Nginx acceda a las fotos directamente1
     ports:
-      - "8000:8000" # Mapeamos el puerto 80 (el del ordenador) real al 80 del contenedor (virtual)
+      - "80:80" # Mapeamos el puerto 80 (HTTP por defecto) real al 80 de Nginx
     depends_on:
       - app
     networks:

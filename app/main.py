@@ -10,6 +10,8 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 from flask import Response # Necesario para el mensaje de login del navegador
 from functools import wraps
 import secrets
+import hashlib
+import logging
 
 app = Flask(__name__)
 # Para registrar IPS reales y evitar conflictos entre https y http
@@ -21,6 +23,12 @@ load_dotenv() # Carga las variables de entorno desde el archivo .env
 # Cragamos la clave de la variable de entorno
 # Si no esta tenemos fallback generado en el momento
 app.secret_key = os.environ.get("FLASK_SECRET_KEY")
+secret_salt = os.environ.get("SECRET_SALT")
+
+# Comprobamos que se hayan cargado ambas variables de entorno
+if not app.secret_key or not secret_salt:
+    logging.critical("CRÍTICO: FLASK_SECRET_KEY o SECRET_SALT no están configuradas.")
+    raise RuntimeError("CRÍTICO: FLASK_SECRET_KEY o SECRET_SALT no están configuradas en las variables de entorno.")
 
 # Mitigación de CWE-312
 # Al usar redis, los datos sensibles (email, centro, tokens) no se envían 
@@ -46,7 +54,7 @@ def obtener_id_sesion():
 
 # Inicializamos el limitador
 # He decidido limitar por token y no por IP
-# Ya qeu si las peticiones viene de Eduroam
+# Ya que si las peticiones viene de Eduroam
 # Usaran la misma IP
 # Limitaré asimetricamente yo el endpoint crítico /validar
 limiter = Limiter(
@@ -56,7 +64,7 @@ limiter = Limiter(
     strategy="fixed-window"
 )
 
-# --- CABECERAS DE SEGURIDAD ---
+# CABECERAS DE SEGURIDAD 
 @app.after_request
 def añadir_seguridad(response):
     # Evita que la web sea cargada en un iframe 
@@ -67,10 +75,6 @@ def añadir_seguridad(response):
     response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
     return response
 
-if not app.secret_key:
-    # Esto detiene el servidor de raíz y avisa en la consola en caso de que no se haya podido
-    # cargar la clave
-    raise RuntimeError("CRÍTICO: FLASK_SECRET_KEY no está configurada en las variables de entorno.")
 
 def requiere_auth(f):
     @wraps(f)
@@ -89,18 +93,46 @@ def requiere_auth(f):
         return f(*args, **kwargs)
     return decorada
 
+# Convierte el email a un hash
+def convertir_email_hash(email):
+    # Pasar email a limpio
+    email_limpio = email.lower().strip() 
+    # Cocatenamos el salt secreto
+    datos_a_hashear = f"{secret_salt}{email_limpio}".encode('utf-8')
+    # Creamos el hash con un salt secreto
+    email_hash = hashlib.sha256(datos_a_hashear).hexdigest()
+    
+    return email_hash
 
-def registrar_victima(centro, ubicacion):
-    # Buscamos por clave el diccionario en Redis
-    clave_stats = f"stats:{centro}"
-    # Incrementamos el valor segun subclave, es atómico
-    conexion_redis.hincrby(clave_stats, ubicacion, 1)
-
+# Función que al,macena tanto los stast como los participantes en redis
+def registrar_victima(centro, ubicacion, identificador_hash):
+    # Guardamos el hash del identificador
+    clave_participante = f"participante:{identificador_hash}"
+    # Incrementamos el valor
+    # Si es nuevo devuelve 1, si ya existía devuelve 0
+    es_nuevo =conexion_redis.setnx(clave_participante, 1)
+    
+    # Si es nuevo incrementamos stats
+    if es_nuevo:
+        # Le ponemos un tiempo de enfriamiento de 24 horas
+        # Para evitar que se nos llene la RAM (redis corre en RAM)
+        conexion_redis.expire(clave_participante, 86400)
+        # Buscamos por clave el diccionario en Redis
+        clave_stats = f"stats:{centro}"
+        # Incrementamos el valor segun subclave (es atómico)
+        conexion_redis.hincrby(clave_stats, ubicacion, 1)
+        return True # Se sumó a la estadística
+    else:
+        return False # El alumno ya había caído antes, ignoramos la petición
+        
+        
 @app.route('/login/<string:uuid>')
 def index_qr(uuid):
     # Bloqueo cualquier intento de usar puntos o barras para navegar por el sistema
     if ".." in uuid or "/" in uuid or "\\" in uuid:
-        print(f"ALERTA DE SEGURIDAD: Intento de Path Traversal detectado desde IP {request.remote_addr}")
+        # Usamos logging.warning porque es un evento de seguridad anómalo, 
+        # print es más dificil de procesar
+        logging.warning(f"ALERTA DE SEGURIDAD: Intento de Path Traversal detectado desde IP {request.remote_addr} con UUID: {uuid}")
         abort(400)
     
     # Buscamos en el diccionario
@@ -143,11 +175,12 @@ def ms_password():
 @app.route('/validar', methods=['POST'])
 @limiter.limit("5 per minute") # Límite por SESIÓN, no por IP. Permite errores humanos, bloquea ráfagas de bots.
 def validar():
+    es_nuevo = False
     # Recuperamos la facultad que guardamos al principio de todo (QR)
     centro = session.get('centro', 'desconocido')
     ubicacion = session.get('ubicacion', 'desconocida')
-
-    # Capturamos las credenciales de AMBOS formularios para el log
+    
+    # Capturamos las credenciale
     email = session.get('email') # Del flujo de Microsoft
     username = request.form.get('username') # Del flujo de Moodle
     
@@ -156,29 +189,40 @@ def validar():
     # El que viene del formulario
     token_del_formulario = request.form.get('csrf_token')
 
-    # Usamos secrets.compare_digest para evitar ataques de temporización (Timing Attacks)
+    # Usamos secrets.compare_digest para evitar ataques de temporización 
     if not token_en_sesion or not token_del_formulario or not secrets.compare_digest(token_en_sesion, token_del_formulario):
+        logging.warning(f"FALLO CSRF: IP {request.remote_addr} intentó validar sin token válido.")
         abort(403) # 403 Forbidden: Acceso denegado
         
-    # Consumimos el token. Así evitamos ataques de repetición (Replay Attacks).
+    # Consumimos el token. Así evitamos ataques de repetición 
     session.pop('csrf_token', None)
     
+    # Identificamos si hemos obtenido email o username
+    identificador = email if email else username
+    
     # Registramos el éxito en Redis
-    registrar_victima(centro, ubicacion)
     
-    # Logging para el auditor: ¿Quién ha caído y por dónde?
-    if email:
-        print(f"IMPACTO (MS): Centro: {centro}, Ubicación: {ubicacion}, Email: {email}")
-    elif username:
-        print(f"IMPACTO (Moodle): Centro: {centro}, Ubicación: {ubicacion}, Usuario: {username}")
-    else:
-        print(f"IMPACTO (Desconocido): Centro: {centro}, Ubicación: {ubicacion}")
-
-    # Limpiamos la sesión para que el navegador no guarde rastro
-    session.clear()
+    if identificador:
+        # Convertimos el identificador a hash
+        identificador_hash = convertir_email_hash(identificador)
     
-    # Mostramos la página de concienciación
-    return render_template('concienciacion.html')
+        es_nuevo = registrar_victima(centro, ubicacion, identificador_hash)
+        
+        # Logging para el auditor
+        if email:
+            logging.info(f"IMPACTO en Microsoft: Centro: {centro}, Ubicación: {ubicacion}")
+        elif username:
+            logging.info(f"IMPACTO en Moodle: Centro: {centro}, Ubicación: {ubicacion}")
+        else:
+            logging.warning(f"IMPACTO (Desconocido): Se recibió una petición vacía desde IP {request.remote_addr}")
+            
+    # Limpiamos solo los datos del impacto para no dejar rastro, 
+    # pero conservamos el limiter_id para que el firewall asimétrico siga funcionando.
+    session.pop('centro', None)
+    session.pop('ubicacion', None)
+    session.pop('email', None)
+    
+    return render_template('concienciacion.html') if es_nuevo else render_template('concienciacion_repetido.html')
 
 # ESTADÍSTICAS
 @app.route(f"/{os.environ.get('ADMIN_PATH', 'admin-default')}")

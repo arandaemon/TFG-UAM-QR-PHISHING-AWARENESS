@@ -1,4 +1,3 @@
----
 # 🛡️ TFG: Proyecto SEIF - Simulacro de QR Phishing (Quishing) y Concienciación
 
 !Python Version

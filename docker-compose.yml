@@ -9,6 +9,15 @@ services:
     env_file:
       - .env
     # No abrimos puertos al exterior, solo vive en la red interna
+    healthcheck:
+      test: ["CMD-SHELL", "python -c 'import urllib.request; urllib.request.urlopen(\"http://localhost:8000/health\")' || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    depends_on:
+      redis:
+        condition: service_healthy
     networks:
       - uam_network
 
@@ -22,8 +31,11 @@ services:
       - ./app/static:/app/static # Para que Nginx acceda a las fotos directamente1
     ports:
       - "80:80" # Mapeamos el puerto 80 (HTTP por defecto) real al 80 de Nginx
-    depends_on:
-      - app
+    depends_on: 
+      app:
+        # Punto de control para el orquestador (Docker). 
+        # Permite verificar la disponibilidad del servicio   
+        condition: service_healthy
     networks:
       - uam_network
 
@@ -33,7 +45,12 @@ services:
     container_name: redis_session
     restart: always
     # Activa el modo AOF
-    command: ["redis-server", "--appendonly", "yes"]
+    command: ["redis-server", "--appendonly", "yes"] # Comprobamos que redis esté funcionando
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
     # Mapea la base de datos de la RAM al disco duro real
     volumes:
       - ./redis_data:/data

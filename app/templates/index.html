@@ -1,19 +1,20 @@
 <!DOCTYPE html>
 
-<html  dir="ltr" lang="en" xml:lang="en">
+<html  dir="ltr" lang="es" xml:lang="es">
 
 <head>
-    <title>Log in to the site | Grado 2025/26</title>
-    <link rel="shortcut icon" href="https://moodle.uam.es/pluginfile.php/1/theme_moove/favicon/1770628194/FavGrado.ico" />
+    <title>Entrar al sitio | Grado 2025/26</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="keywords" content="moodle, Log in to the site | Grado 2025/26" />
-<link rel="stylesheet" type="text/css" href="https://moodle.uam.es/theme/yui_combo.php?rollup/3.18.1/yui-moodlesimple-min.css" /><script id="firstthemesheet" type="text/css">/** Required in order to fix style inclusion problems in IE with YUI **/</script><link rel="stylesheet" type="text/css" href="https://moodle.uam.es/theme/styles.php/moove/1770628194_1766154310/all" />
-<link rel="stylesheet" type="text/css" href="https://moodle.uam.es/course/format/onetopic/styles.php" />
+<meta name="keywords" content="moodle, Entrar al sitio | Grado 2025/26" />
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/yui.base.css') }}" />
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/moove-main.css') }}" />
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/onetopic.css') }}" />
 <script>
 //<![CDATA[
 var M = {}; M.yui = {};
 M.pageloadstarttime = new Date();
-M.cfg = {"wwwroot":"https:\/\/moodle.uam.es","apibase":"https:\/\/moodle.uam.es\/r.php\/api","homeurl":{},"sesskey":"6AlGWGpdJi","sessiontimeout":"10800","sessiontimeoutwarning":1200,"themerev":"1770628194","slasharguments":1,"theme":"moove","iconsystemmodule":"core\/icon_system_fontawesome","jsrev":"1766002813","admin":"admin","svgicons":true,"usertimezone":"Europe\/Madrid","language":"en","courseId":1,"courseContextId":2,"contextid":1,"contextInstanceId":0,"langrev":1771991111,"templaterev":"1766002813","siteId":1,"userId":1};var yui1ConfigFn = function(me) {if(/-skin|reset|fonts|grids|base/.test(me.name)){me.type='css';me.path=me.path.replace(/\.js/,'.css');me.path=me.path.replace(/\/yui2-skin/,'/assets/skins/sam/yui2-skin')}};
+M.cfg = {"wwwroot":"https:\/\/moodle.uam.es","apibase":"https:\/\/moodle.uam.es\/r.php\/api","homeurl":{},"sesskey":"6AlGWGpdJi","sessiontimeout":"10800","sessiontimeoutwarning":1200,"themerev":"1770628194","slasharguments":1,"theme":"moove","iconsystemmodule":"core\/icon_system_fontawesome","jsrev":"1766002813","admin":"admin","svgicons":true,"usertimezone":"Europa\/Madrid","language":"es","courseId":1,"courseContextId":2,"contextid":1,"contextInstanceId":0,"langrev":1771991111,"templaterev":"1766002813","siteId":1,"userId":0};var yui1ConfigFn = function(me) {if(/-skin|reset|fonts|grids|base/.test(me.name)){me.type='css';me.path=me.path.replace(/\.js/,'.css');me.path=me.path.replace(/\/yui2-skin/,'/assets/skins/sam/yui2-skin')}};
 var yui2ConfigFn = function(me) {var parts=me.name.replace(/^moodle-/,'').split('-'),component=parts.shift(),module=parts[0],min='-min';if(/-(skin|core)$/.test(me.name)){parts.pop();me.type='css';min=''}
 if(module){var filename=parts.join('-');me.path=component+'/'+module+'/'+filename+min+'.'+me.type}else{me.path=component+'/'+component+'.'+me.type}};
 YUI_config = {"debug":false,"base":"https:\/\/moodle.uam.es\/lib\/yuilib\/3.18.1\/","comboBase":"https:\/\/moodle.uam.es\/theme\/yui_combo.php?","combine":true,"filter":null,"insertBefore":"firstthemesheet","groups":{"yui2":{"base":"https:\/\/moodle.uam.es\/lib\/yuilib\/2in3\/2.9.0\/build\/","comboBase":"https:\/\/moodle.uam.es\/theme\/yui_combo.php?","combine":true,"ext":false,"root":"2in3\/2.9.0\/build\/","patterns":{"yui2-":{"group":"yui2","configFn":yui1ConfigFn}}},"moodle":{"name":"moodle","base":"https:\/\/moodle.uam.es\/theme\/yui_combo.php?m\/1766002813\/","combine":true,"comboBase":"https:\/\/moodle.uam.es\/theme\/yui_combo.php?","ext":false,"root":"m\/1766002813\/","patterns":{"moodle-":{"group":"moodle","configFn":yui2ConfigFn}},"filter":null,"modules":{"moodle-core-lockscroll":{"requires":["plugin","base-build"]},"moodle-core-blocks":{"requires":["base","node","io","dom","dd","dd-scroll","moodle-core-dragdrop","moodle-core-notification"]},"moodle-core-maintenancemodetimer":{"requires":["base","node"]},"moodle-core-event":{"requires":["event-custom"]},"moodle-core-chooserdialogue":{"requires":["base","panel","moodle-core-notification"]},"moodle-core-dragdrop":{"requires":["base","node","io","dom","dd","event-key","event-focus","moodle-core-notification"]},"moodle-core-actionmenu":{"requires":["base","event","node-event-simulate"]},"moodle-core-notification":{"requires":["moodle-core-notification-dialogue","moodle-core-notification-alert","moodle-core-notification-confirm","moodle-core-notification-exception","moodle-core-notification-ajaxexception"]},"moodle-core-notification-dialogue":{"requires":["base","node","panel","escape","event-key","dd-plugin","moodle-core-widget-focusafterclose","moodle-core-lockscroll"]},"moodle-core-notification-alert":{"requires":["moodle-core-notification-dialogue"]},"moodle-core-notification-confirm":{"requires":["moodle-core-notification-dialogue"]},"moodle-core-notification-exception":{"requires":["moodle-core-notification-dialogue"]},"moodle-core-notification-ajaxexception":{"requires":["moodle-core-notification-dialogue"]},"moodle-core-handlebars":{"condition":{"trigger":"handlebars","when":"after"}},"moodle-core_availability-form":{"requires":["base","node","event","event-delegate","panel","moodle-core-notification-dialogue","json"]},"moodle-course-util":{"requires":["node"],"use":["moodle-course-util-base"],"submodules":{"moodle-course-util-base":{},"moodle-course-util-section":{"requires":["node","moodle-course-util-base"]},"moodle-course-util-cm":{"requires":["node","moodle-course-util-base"]}}},"moodle-course-dragdrop":{"requires":["base","node","io","dom","dd","dd-scroll","moodle-core-dragdrop","moodle-core-notification","moodle-course-coursebase","moodle-course-util"]},"moodle-course-management":{"requires":["base","node","io-base","moodle-core-notification-exception","json-parse","dd-constrain","dd-proxy","dd-drop","dd-delegate","node-event-delegate"]},"moodle-course-categoryexpander":{"requires":["node","event-key"]},"moodle-form-dateselector":{"requires":["base","node","overlay","calendar"]},"moodle-form-shortforms":{"requires":["node","base","selector-css3","moodle-core-event"]},"moodle-question-searchform":{"requires":["base","node"]},"moodle-question-chooser":{"requires":["moodle-core-chooserdialogue"]},"moodle-availability_completion-form":{"requires":["base","node","event","moodle-core_availability-form"]},"moodle-availability_date-form":{"requires":["base","node","event","io","moodle-core_availability-form"]},"moodle-availability_grade-form":{"requires":["base","node","event","moodle-core_availability-form"]},"moodle-availability_group-form":{"requires":["base","node","event","moodle-core_availability-form"]},"moodle-availability_grouping-form":{"requires":["base","node","event","moodle-core_availability-form"]},"moodle-availability_profile-form":{"requires":["base","node","event","moodle-core_availability-form"]},"moodle-mod_assign-history":{"requires":["node","transition"]},"moodle-mod_attendance-groupfilter":{"requires":["base","node"]},"moodle-mod_quiz-modform":{"requires":["base","node","event"]},"moodle-mod_quiz-questionchooser":{"requires":["moodle-core-chooserdialogue","moodle-mod_quiz-util","querystring-parse"]},"moodle-mod_quiz-util":{"requires":["node","moodle-core-actionmenu"],"use":["moodle-mod_quiz-util-base"],"submodules":{"moodle-mod_quiz-util-base":{},"moodle-mod_quiz-util-slot":{"requires":["node","moodle-mod_quiz-util-base"]},"moodle-mod_quiz-util-page":{"requires":["node","moodle-mod_quiz-util-base"]}}},"moodle-mod_quiz-toolboxes":{"requires":["base","node","event","event-key","io","moodle-mod_quiz-quizbase","moodle-mod_quiz-util-slot","moodle-core-notification-ajaxexception"]},"moodle-mod_quiz-dragdrop":{"requires":["base","node","io","dom","dd","dd-scroll","moodle-core-dragdrop","moodle-core-notification","moodle-mod_quiz-quizbase","moodle-mod_quiz-util-base","moodle-mod_quiz-util-page","moodle-mod_quiz-util-slot","moodle-course-util"]},"moodle-mod_quiz-quizbase":{"requires":["base","node"]},"moodle-mod_quiz-autosave":{"requires":["base","node","event","event-valuechange","node-event-delegate","io-form","datatype-date-format"]},"moodle-mod_scheduler-studentlist":{"requires":["base","node","event","io"]},"moodle-mod_scheduler-delselected":{"requires":["base","node","event"]},"moodle-mod_scheduler-saveseen":{"requires":["base","node","event"]},"moodle-message_airnotifier-toolboxes":{"requires":["base","node","io"]},"moodle-editor_atto-rangy":{"requires":[]},"moodle-editor_atto-editor":{"requires":["node","transition","io","overlay","escape","event","event-simulate","event-custom","node-event-html5","node-event-simulate","yui-throttle","moodle-core-notification-dialogue","moodle-editor_atto-rangy","handlebars","timers","querystring-stringify"]},"moodle-editor_atto-plugin":{"requires":["node","base","escape","event","event-outside","handlebars","event-custom","timers","moodle-editor_atto-menu"]},"moodle-editor_atto-menu":{"requires":["moodle-core-notification-dialogue","node","event","event-custom"]},"moodle-report_eventlist-eventfilter":{"requires":["base","event","node","node-event-delegate","datatable","autocomplete","autocomplete-filters"]},"moodle-report_loglive-fetchlogs":{"requires":["base","event","node","io","node-event-delegate"]},"moodle-gradereport_history-userselector":{"requires":["escape","event-delegate","event-key","handlebars","io-base","json-parse","moodle-core-notification-dialogue"]},"moodle-qbank_editquestion-chooser":{"requires":["moodle-core-chooserdialogue"]},"moodle-tool_lp-dragdrop-reorder":{"requires":["moodle-core-dragdrop"]},"moodle-local_kaltura-ltitinymcepanel":{"requires":["base","node","panel","node-event-simulate"]},"moodle-local_kaltura-ltiservice":{"requires":["base","node","node-event-simulate"]},"moodle-local_kaltura-ltipanel":{"requires":["base","node","panel","node-event-simulate"]},"moodle-local_kaltura-lticontainer":{"requires":["base","node"]},"moodle-assignfeedback_editpdf-editor":{"requires":["base","event","node","io","graphics","json","event-move","event-resize","transition","querystring-stringify-simple","moodle-core-notification-dialog","moodle-core-notification-alert","moodle-core-notification-warning","moodle-core-notification-exception","moodle-core-notification-ajaxexception"]},"moodle-atto_accessibilitychecker-button":{"requires":["color-base","moodle-editor_atto-plugin"]},"moodle-atto_accessibilityhelper-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_align-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_bold-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_charmap-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_clear-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_collapse-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_emojipicker-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_emoticon-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_equation-button":{"requires":["moodle-editor_atto-plugin","moodle-core-event","io","event-valuechange","tabview","array-extras"]},"moodle-atto_fontfamily-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_h5p-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_html-codemirror":{"requires":["moodle-atto_html-codemirror-skin"]},"moodle-atto_html-button":{"requires":["promise","moodle-editor_atto-plugin","moodle-atto_html-beautify","moodle-atto_html-codemirror","event-valuechange"]},"moodle-atto_html-beautify":{},"moodle-atto_image-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_indent-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_italic-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_kalturamedia-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_link-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_managefiles-usedfiles":{"requires":["node","escape"]},"moodle-atto_managefiles-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_media-button":{"requires":["moodle-editor_atto-plugin","moodle-form-shortforms"]},"moodle-atto_noautolink-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_orderedlist-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_recordrtc-button":{"requires":["moodle-editor_atto-plugin","moodle-atto_recordrtc-recording"]},"moodle-atto_recordrtc-recording":{"requires":["moodle-atto_recordrtc-button"]},"moodle-atto_rtl-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_strike-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_subscript-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_superscript-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_table-button":{"requires":["moodle-editor_atto-plugin","moodle-editor_atto-menu","event","event-valuechange"]},"moodle-atto_title-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_underline-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_undo-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_unorderedlist-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_wiris-button":{"requires":["moodle-editor_atto-plugin","get"]}}},"gallery":{"name":"gallery","base":"https:\/\/moodle.uam.es\/lib\/yuilib\/gallery\/","combine":true,"comboBase":"https:\/\/moodle.uam.es\/theme\/yui_combo.php?","ext":false,"root":"gallery\/1766002813\/","patterns":{"gallery-":{"group":"gallery"}}}},"modules":{"core_filepicker":{"name":"core_filepicker","fullpath":"https:\/\/moodle.uam.es\/lib\/javascript.php\/1766002813\/repository\/filepicker.js","requires":["base","node","node-event-simulate","json","async-queue","io-base","io-upload-iframe","io-form","yui2-treeview","panel","cookie","datatable","datatable-sort","resize-plugin","dd-plugin","escape","moodle-core_filepicker","moodle-core-notification-dialogue"]},"core_comment":{"name":"core_comment","fullpath":"https:\/\/moodle.uam.es\/lib\/javascript.php\/1766002813\/comment\/comment.js","requires":["base","io-base","node","json","yui2-animation","overlay","escape"]}},"logInclude":[],"logExclude":[],"logLevel":null};
@@ -50,15 +51,43 @@ M.yui.loader = {modules: {}};
         font-family: 'FontAwesome' !important;
     }
 </style>
+<style>
+  /* Wrapper centrado */
+  .login-wrapper {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-height: 100vh;
+  }
+
+  /* Quitar estilos del container genérico en esta página */
+  #page-login-index .login-container {
+    background-color: transparent !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* La card real es el loginform */
+  #page-login-index .login-container .loginform {
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 2rem;
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15);
+    border-radius: .5rem;
+    width: 60% !important;
+  }
+</style>
 </head>
 
-<body  id="page-login-index" class="format-site  path-login gecko dir-ltr lang-en yui-skin-sam yui3-skin-sam moodle-uam-es pagelayout-login course-1 context-1 theme center moove-login">
+<body  id="page-login-index" class="format-site  path-login gecko dir-ltr lang-es yui-skin-sam yui3-skin-sam moodle-uam-es pagelayout-login course-1 context-1 notloggedin theme center moove-login">
 <div class="toast-wrapper mx-auto py-0 fixed-top" role="status" aria-live="polite"></div>
 
 <div id="page-wrapper">
 
     <div>
-    <a class="sr-only sr-only-focusable" href="#maincontent">Skip to main content</a>
+    <a class="sr-only sr-only-focusable" href="#maincontent">Salta al contenido principal</a>
 </div><script src="https://moodle.uam.es/lib/javascript.php/1766002813/lib/polyfills/polyfill.js"></script>
 <script src="https://moodle.uam.es/theme/yui_combo.php?rollup/3.18.1/yui-moodlesimple-min.js"></script><script src="https://moodle.uam.es/lib/javascript.php/1766002813/lib/javascript-static.js"></script>
 <script>
@@ -72,20 +101,20 @@ document.body.className += ' jsenabled';
     <div id="page" class="container-fluid mt-0">
         <div id="page-content" class="row">
             <div id="region-main-box" class="col-12">
-                <section id="region-main" class="col-12 h-100" aria-label="Content">
+                <section id="region-main" class="col-12 h-100" aria-label="Contenido">
                     <div class="login-wrapper">
                         <div class="login-container">
                             <div role="main"><span id="maincontent"></span><div class="loginform row hastwocolumns">
     <div class="col-lg-6 col-md-12 left-column">
 
         <div id="loginlogo" class="login-logo">
-            <img id="logoimage" src="//moodle.uam.es/pluginfile.php/1/theme_moove/logo/1770628194/LogoGrado.png" class="img-fluid" alt="Moodle Grado 2025/26"/>
-            <h1 class="login-heading sr-only">Log in to Moodle Grado 2025/26</h1>
+            <img id="logoimage" src="{{ url_for('static', filename='img/logo_uam.png') }}" class="img-fluid" alt="Moodle Grado 2025/26"/>
+            <h1 class="login-heading sr-only">Entrar a Moodle Grado 2025/26</h1>
         </div>
-            <a href="https://moodle.uam.es/login/signup.php" class="sr-only">Skip to create new account</a>
+            <a href="https://moodle.uam.es/login/signup.php" class="sr-only">Saltar a creación de una nueva cuenta</a>
 
         <div class="column-content">
-                <div style="font-size:1.875rem;font-weight:normal;color:#4a7729;">Users with UAM email</div><p><br />Acceso para cuentas ID-UAM (@uam.es, @estudiante.uam.es, @inv.uam.es). Al hacer clic en el siguiente botón se abrirá el servicio de autenticación centralizada de usuarios de la UAM.</p>
+                <div style="font-size:1.875rem;font-weight:normal;color:#4a7729;">Usuarios con correo UAM</div><p><br />Acceso para cuentas ID-UAM (@uam.es, @estudiante.uam.es, @inv.uam.es). Al hacer clic en el siguiente botón se abrirá el servicio de autenticación centralizada de usuarios de la UAM.</p>
                 <style>
                     .login-container .login-identityproviders {
                         width: 100%;
@@ -114,7 +143,7 @@ document.body.className += ' jsenabled';
                 <div class="login-identityproviders">
                     <br>
                         <a class="btn login-identityprovider-btn btn-block " href="/login.microsoftonline.com/fc6602ef-8e88-4f1d-a206-e14a3bc19af2/saml2?SAMLRequest=fVLLbtswEPwVgXe9aElRCNuAG6OogbQ1YreHXooVtYoJiKTKpfr6%2BuphJykS%2BERwuDO7M9wlgW47sen9yTzgjx7JB791a0hMDyvWOyMskCJhQCMJL8Vh8%2FFe8CgRnbPeStuyF5TrDCBC55U1LNhtV%2Bx7LitMsnyRlnnFEylvqqq8qWqeQlGWcAtZhWkKvCgrFnxFRwNzxQahgU7U486QB%2BMHKOFFmGRhUh7TXCwKkebfWLAd3CgDfmKdvO9IxHFrH5WJtJLOkm28Na0yGEmr40YWRcKxCUssyzBr0joEnhQhphksKpneQsPj0SNnweZi5M4a6jW6A7qfSuKXh%2FvnVhIo6kFHSLG2dd9i1J26SSGm%2BeQhSJrQzd%2FeIQv250jfKVMr83g9zWouIvHheNyH%2B8%2BHI1svR1kxpePWbwyyjF8WLOfv%2FzRI77Z72yr5J3hvnQZ%2FvfOIqDpsplLhHRhSaPyQS9vaX3cOweOKedcjiy9NDtJ2w7SX63nb0O22T3Nqa%2BshpfOoMCzlnNIYl0YPNXgY05pN%2FK9xwZ7axK9Xe%2F0P">
-                                <img src="https://moodle.uam.es/theme/image.php/moove/core/1770628194/i/user" alt="" width="36" height="36"/>
+                                <img src="{{ url_for('static', filename='img/user-icon.svg') }}" alt="" width="36" height="36"/>
                             ID-UAM
                         </a>
                 </div>
@@ -164,7 +193,7 @@ document.body.className += ' jsenabled';
                         
                         </div>
                     </div>
-                <button type="button" class="ml-auto btn btn-link"  data-modal="alert" data-modal-title-str='["cookiesenabled", "core"]'  data-modal-content-str='["cookiesenabled_help_html", "core"]'><i class="fa fa-question-circle"></i> Cookies notice</button>
+                <button type="button" class="ml-auto btn btn-link"  data-modal="alert" data-modal-title-str='["cookiesenabled", "core"]'  data-modal-content-str='["cookiesenabled_help_html", "core"]'><i class="fa fa-question-circle"></i> Aviso de Cookies</button>
             </div>
         </div>
         
@@ -182,22 +211,22 @@ document.body.className += ' jsenabled';
                 <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                 <div class="login-form-username form-group">
                     <label for="username" class="sr-only">
-                            Username
+                            Nombre de usuario
                     </label>
-                    <input type="text" name="username" id="username" class="form-control form-control-lg" value="" placeholder="Username" autocomplete="username" required >
+                    <input type="text" name="username" id="username" class="form-control form-control-lg" value="" placeholder="Nombre de usuario" autocomplete="username" required >
                 </div>
                 <div class="login-form-password form-group">
-                    <label for="password" class="sr-only">Password</label>
-                    <input type="password" name="password" id="password" value="" class="form-control form-control-lg" placeholder="Password" autocomplete="current-password" required>
+                    <label for="password" class="sr-only">Contraseña</label>
+                    <input type="password" name="password" id="password" value="" class="form-control form-control-lg" placeholder="Contraseña" autocomplete="current-password" required>
                 </div>
                 <div class="login-form-submit form-group">
-                    <button class="btn btn-primary btn-block btn-lg" type="submit" id="loginbtn">Log in</button>
+                    <button class="btn btn-primary btn-block btn-lg" type="submit" id="loginbtn">Acceder</button>
                 </div>
                 <div class="login-form-forgotpassword form-group text-center">
-                    <a href="https://moodle.uam.es/login/forgot_password.php">Lost password?</a>
+                    <a href="https://moodle.uam.es/login/forgot_password.php">¿Olvidó su contraseña?</a>
                 </div>
                     <div class="login-signup text-center">
-                        Don't have an account? <a href="https://moodle.uam.es/login/signup.php">Create new account</a>
+                        ¿No tiene cuenta? <a href="https://moodle.uam.es/login/signup.php">Crear nueva cuenta</a>
                     </div>
             </form>
         </div>
@@ -211,7 +240,7 @@ document.body.className += ' jsenabled';
 </div>
 
 <div class="d-none">
-    <div><a class="mobilelink" href="https://download.moodle.org/mobile?version=2024100704.04&amp;lang=en&amp;iosappid=633359593&amp;androidappid=com.moodle.moodlemobile&amp;siteurl=https%3A%2F%2Fmoodle.uam.es">Get the mobile app</a></div>
+    <div><a class="mobilelink" href="https://download.moodle.org/mobile?version=2024100704.04&amp;lang=es&amp;iosappid=633359593&amp;androidappid=com.moodle.moodlemobile&amp;siteurl=https%3A%2F%2Fmoodle.uam.es">Descargar la app para dispositivos móviles</a></div>
     <script>
 //<![CDATA[
 
@@ -224,9 +253,9 @@ M.util.js_pending("core/first");
 require(['core/first'], function() {
 require(['core/prefetch'])
 ;
-M.util.js_pending('filter_mathjaxloader/loader'); require(['filter_mathjaxloader/loader'], function(amd) {amd.configure({"mathjaxconfig":"\nMathJax.Hub.Config({\n    config: [\"Accessible.js\", \"Safe.js\"],\n    errorSettings: { message: [\"!\"] },\n    skipStartupTypeset: true,\n    messageStyle: \"none\"\n});\n","lang":"en"}); M.util.js_complete('filter_mathjaxloader/loader');});;
+M.util.js_pending('filter_mathjaxloader/loader'); require(['filter_mathjaxloader/loader'], function(amd) {amd.configure({"mathjaxconfig":"\nMathJax.Hub.Config({\n    config: [\"Accessible.js\", \"Safe.js\"],\n    errorSettings: { message: [\"!\"] },\n    skipStartupTypeset: true,\n    messageStyle: \"none\"\n});\n","lang":"es"}); M.util.js_complete('filter_mathjaxloader/loader');});;
 require(["media_videojs/loader"], function(loader) {
-    loader.setUp('en');
+    loader.setUp('es');
 });;
 M.util.js_pending('filter_glossary/autolinker'); require(['filter_glossary/autolinker'], function(amd) {amd.init(); M.util.js_complete('filter_glossary/autolinker');});;
 
@@ -255,7 +284,7 @@ M.util.js_pending('core/storage_validation'); require(['core/storage_validation'
 <script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js?delayStartupUntil=configured"></script>
 <script>
 //<![CDATA[
-M.str = {"moodle":{"lastmodified":"Last modified","name":"Name","error":"Error","info":"Information","yes":"Yes","no":"No","cancel":"Cancel","confirm":"Confirm","areyousure":"Are you sure?","closebuttontitle":"Close","unknownerror":"Unknown error","file":"File","url":"URL","collapseall":"Collapse all","expandall":"Expand all"},"repository":{"type":"Type","size":"Size","invalidjson":"Invalid JSON string","nofilesattached":"No files attached","filepicker":"File picker","logout":"Logout","nofilesavailable":"No files available","norepositoriesavailable":"Sorry, none of your current repositories can return files in the required format.","fileexistsdialogheader":"File exists","fileexistsdialog_editor":"A file with that name has already been attached to the text you are editing.","fileexistsdialog_filemanager":"A file with that name has already been attached","renameto":"Rename to \"{$a}\"","referencesexist":"There are {$a} links to this file","select":"Select"},"admin":{"confirmdeletecomments":"Are you sure you want to delete the selected comment(s)?","confirmation":"Confirmation"},"debug":{"debuginfo":"Debug info","line":"Line","stacktrace":"Stack trace"},"langconfig":{"labelsep":": "}};
+M.str = {"moodle":{"lastmodified":"\u00daltima modificaci\u00f3n","name":"Nombre","error":"Error","info":"Informaci\u00f3n","yes":"S\u00ed","no":"No","cancel":"Cancelar","confirm":"Confirmar","areyousure":"\u00bfEst\u00e1 seguro?","closebuttontitle":"Cerrar","unknownerror":"Error desconocido","file":"Archivo","url":"URL","collapseall":"Colapsar todo","expandall":"Expandir todo"},"repository":{"type":"Tipo","size":"Tama\u00f1o","invalidjson":"Cadena JSON no v\u00e1lida","nofilesattached":"No se han adjuntado archivos","filepicker":"Selector de archivos","logout":"Salir","nofilesavailable":"No hay archivos disponibles","norepositoriesavailable":"Lo sentimos, ninguno de sus repositorios actuales puede devolver archivos en el formato solicitado.","fileexistsdialogheader":"El archivo existe","fileexistsdialog_editor":"Un archivo con ese nombre ha sido anexado al texto que Usted est\u00e1 editando","fileexistsdialog_filemanager":"Ya ha sido anexado un archivo con ese nombre","renameto":"Cambiar el nombre a \"{$a}\"","referencesexist":"Existen {$a} enlaces a este archivo","select":"Seleccionar"},"admin":{"confirmdeletecomments":"\u00bfSeguro que quiere eliminar el\/los comentario(s) seleccionados?","confirmation":"Confirmaci\u00f3n"},"debug":{"debuginfo":"Informaci\u00f3n de depuraci\u00f3n","line":"L\u00ednea","stacktrace":"Trazado de la pila (stack)"},"langconfig":{"labelsep":":"}};
 //]]>
 </script>
 <script>

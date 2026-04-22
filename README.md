@@ -13,11 +13,23 @@ La campaña consistió en el despliegue físico de códigos QR maliciosos superp
 ---
 
 ## 📑 Índice
-1. Arquitectura del Sistema
-2. Estructura del Proyecto
-3. Análisis de Ciberseguridad
-4. Despliegue y Configuración
-5. Aviso Legal
+1. Características y Mejoras Implementadas
+2. Arquitectura del Sistema
+3. Estructura del Proyecto
+4. Análisis de Ciberseguridad
+5. Despliegue y Configuración
+6. Aviso Legal
+
+---
+
+## ✨ Características y Mejoras Implementadas
+
+* **Analítica Temporal y Embudo de Conversión:** Registro detallado con timestamps mediante Redis (`ZADD`, `SADD`) para auditar la caída de los usuarios en 3 fases: *Escaneo de QR, Introducción de Email e Introducción de Contraseña*.
+* **Exportación de Resultados:** Panel de administración ampliado con opción de descargar informes en formato CSV, generado de manera eficiente a través de un flujo por bloques (`yield`) para evitar la sobrecarga de RAM.
+* **Monitorización de Contenedores:** Instrucciones `healthcheck` integradas en Docker Compose y rutas API en Flask para garantizar la resiliencia entre el backend y Redis.
+* **Logging Estructurado (JSON):** Clases de formateo personalizadas en Python para exportar todos los eventos (impactos, fallos, etc.) en formato JSON, facilitando su futura integración con sistemas de monitorización (ELK, Grafana).
+* **Concienciación Reactiva e Interactiva:** Tras la captura segura de fases, el sistema redirige automáticamente a una página educativa con referencias visuales sobre el fraude.
+* **Coherencia y Localización:** Todo el entorno, los formularios y el panel están forzados al español, replicando de forma nativa la experiencia promedio esperada por la mayoría del alumnado de la UAM e impidiendo sospechas por traducciones mixtas.
 
 ---
 
@@ -36,13 +48,16 @@ El despliegue está diseñado bajo una arquitectura de **microservicios orquesta
 ```text
 TFG-UAM-QR-PHISHING-AWARENESS/
 ├── app/
-│   ├── static/               # Recursos estáticos (imágenes, CSS) servidos por Nginx
+    │   ├── static/               # Recursos estáticos (imágenes locales, CSS indexado (independiente)
 │   ├── templates/            # Plantillas HTML (Phishing, Concienciación, Panel Admin)
 │   ├── .dockerignore         # Exclusión de archivos sensibles para la imagen Docker
 │   ├── Dockerfile            # Construcción de la imagen Python/Gunicorn (CWE-250)
-│   ├── main.py               # Lógica principal, rutas y protecciones Flask
+    │   ├── app.py                # Configuración principal de Flask, seguridad y logging JSON
+    │   ├── redis_db.py           # Conexión a Redis y lógica para estadísticas/embudos
+    │   ├── rutas_admin.py        # Panel de control y endpoints de exportación CSV (protegidos)
+    │   ├── rutas_phishing.py     # Endpoints del clon de Moodle y captura de métricas
+    │   ├── rutas_qrs.py          # Diccionario de mapeo de UUIDs a Facultades y Ubicaciones
 │   ├── requirements.txt      # Dependencias del entorno de Python
-│   └── rutas.py              # Diccionario de mapeo de UUIDs a Facultades y Ubicaciones
 ├── nginx/
 │   └── conf.d/
 │       └── default.conf      # Configuración del proxy inverso y bloqueos de seguridad
@@ -65,6 +80,7 @@ Dado su carácter institucional y su exposición en una red pública masiva, el 
 5. **Prevención de Condiciones de Carrera (CWE-362):** Las estadísticas se guardan usando operaciones atómicas en memoria (`setnx` y `hincrby` de Redis) para asegurar la integridad de datos frente a picos masivos de tráfico.
 6. **Mitigación de Path Traversal:** Filtros sanitarios en la entrada de parámetros (`/login/<uuid>`) y reglas estrictas en Nginx para denegar el acceso a archivos ocultos (`.env`, `.git`) y código fuente.
 7. **Defensa en Profundidad (Contenedores):** El `Dockerfile` opera bajo un usuario sin privilegios (`appuser`), aislando el proceso en caso de que se logre ejecución remota de código (RCE). Evita **CWE-250**.
+8. **Resiliencia y Alta Disponibilidad (Independencia de Origen):** Los recursos estáticos del portal clonado (CSS, SVG, PNG) se alojan y sirven localmente. Esto elimina la dependencia del servidor legítimo de Moodle, acelerando la carga, garantizando la supervivencia del panel ante caídas del servicio original y eliminando el tráfico saliente que podría alertar a los administradores de red.
 
 ---
 

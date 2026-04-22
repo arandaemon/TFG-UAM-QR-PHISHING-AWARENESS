@@ -21,11 +21,11 @@
         .content-wrapper {
             display: flex;
             flex-direction: row; 
-            align-items: center; 
+            align-items: flex-start; 
             justify-content: center; 
             gap: 40px; 
             width: 100%;
-            max-width: 900px; 
+            max-width: 1000px; 
         }
 
         .left-content {
@@ -34,6 +34,8 @@
             gap: 20px; 
             align-items: center;
             flex-shrink: 0; 
+            position: sticky;
+            top: 20px;
         }
 
         .logo-seif {
@@ -49,9 +51,8 @@
             padding: 30px;
             border-radius: 12px; 
             width: 100%;
-            max-width: 550px;
+            max-width: 650px; /* Un poco más ancho para que quepa bien el quiz */
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 15px rgba(255, 0, 255, 0.1); 
-            text-align: center;
         }
         
         h1 { 
@@ -62,12 +63,14 @@
             line-height: 1.2;
             text-transform: uppercase;
             letter-spacing: 1px;
+            text-align: center;
         }
         
         p {
             font-size: 1rem;
             line-height: 1.5;
             color: #ececec;
+            text-align: center;
         }
 
         .privacy-notice {
@@ -79,94 +82,146 @@
             text-align: left;
         }
         
-        .privacy-notice p {
-            margin: 0;
-            font-size: 0.95rem;
+        .privacy-notice p { margin: 0; font-size: 0.95rem; text-align: left; }
+
+        /* --- NUEVO: COMPARADOR DE URL --- */
+        .url-comparison {
+            background: #050505;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            text-align: center;
+            font-family: monospace;
+            font-size: 1.2rem;
+            letter-spacing: 1px;
         }
 
-        .tips { 
-            text-align: left; 
-            background: #080808; 
-            padding: 20px; 
-            border-radius: 8px; 
-            color: #fff; 
-            font-size: 0.9rem;
-            margin-top: 25px;
-            border-left: 4px solid #FF00FF; 
+        .url-row { margin: 10px 0; }
+        .url-fake { color: #ff4444; }
+        .url-real { color: #44ff44; }
+        
+        .highlight-fake { 
+            background: rgba(255, 68, 68, 0.2); 
+            border-bottom: 2px solid #ff4444; 
+            font-weight: bold;
         }
         
-        .tips strong {
-            display: block;
-            margin-bottom: 10px;
+        .highlight-real { 
+            background: rgba(68, 255, 68, 0.2); 
+            border-bottom: 2px solid #44ff44; 
+            font-weight: bold;
+        }
+
+        /* --- NUEVO: QUIZ INTERACTIVO --- */
+        .quiz-section {
+            background: #080808;
+            border-left: 4px solid #FF00FF;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 25px;
+        }
+
+        .quiz-title {
             color: #FF00FF;
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
         }
 
-        .tips ul {
-            margin: 0;
-            padding-left: 20px;
-        }
-        
-        .tips li {
-            margin-bottom: 10px;
+        .question-block { margin-bottom: 20px; }
+        .question-text { font-weight: 600; margin-bottom: 10px; font-size: 0.95rem; }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
         }
 
-        .link-real {
+        .quiz-btn {
+            background: #1a1a1a;
+            color: #ececec;
+            border: 1px solid #444;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: left;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .quiz-btn:hover:not(:disabled) {
+            border-color: #FF00FF;
+            background: rgba(255, 0, 255, 0.1);
+        }
+
+        .quiz-btn:disabled { cursor: not-allowed; opacity: 0.7; }
+        .quiz-btn.correct { background: rgba(68, 255, 68, 0.15); border-color: #44ff44; color: #fff; }
+        .quiz-btn.incorrect { background: rgba(255, 68, 68, 0.15); border-color: #ff4444; color: #fff; }
+
+        .feedback {
+            margin-top: 8px;
+            font-size: 0.85rem;
+            display: none;
+            padding: 8px;
+            border-radius: 4px;
+        }
+
+        /* --- RECURSOS Y ENLACES --- */
+        .resources {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-link {
             display: inline-block;
-            margin-top: 25px;
-            color: #FF00FF; 
-            font-weight: bold; 
-            text-decoration: none; 
-            font-size: 1rem;
+            color: #fff;
+            text-decoration: none;
+            font-size: 0.9rem;
             border: 1px solid #FF00FF;
             padding: 10px 20px;
             border-radius: 5px;
             transition: all 0.3s ease;
+            text-align: center;
+            /* SE HA ELIMINADO flex: 1; DE AQUÍ */
+            min-width: 200px;
         }
 
-        .link-real:hover {
-            background: #FF00FF;
-            color: #000;
+        .btn-link.primary { background: #FF00FF; color: #000; font-weight: bold; }
+        .btn-link.primary:hover { background: #cc00cc; border-color: #cc00cc; box-shadow: 0 0 15px rgba(255, 0, 255, 0.4); }
+        .btn-link.secondary { background: transparent; color: #FF00FF; }
+        .btn-link.secondary:hover { background: rgba(255, 0, 255, 0.1); }
+
+        /* AÑADIMOS flex: 1; SOLO PARA LOS BOTONES DE LA SECCIÓN FINAL */
+        .resources .btn-link {
+            flex: 1;
         }
-        
-        /* --- ESTILOS DEL EASTER EGG --- */
+
+        /* --- ESTILOS DEL EASTER EGG (Mantenidos) --- */
         #qtip-easter-egg {
             display: none; 
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
+            top: 0; left: 0; width: 100vw; height: 100vh;
             background-color: rgba(0, 0, 0, 0.95);
             z-index: 9999;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            flex-direction: column; justify-content: center; align-items: center;
             animation: fadeIn 0.5s ease-in-out;
         }
-
         #qtip-easter-egg img {
-            width: 250px;
-            height: 250px;
-            object-fit: cover;
-            border-radius: 50%;
-            border: 4px solid #FF00FF;
-            box-shadow: 0 0 40px rgba(255, 0, 255, 0.4);
+            width: 250px; height: 250px; object-fit: cover; border-radius: 50%;
+            border: 4px solid #FF00FF; box-shadow: 0 0 40px rgba(255, 0, 255, 0.4);
             margin-bottom: 20px;
         }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1); }
-        }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
 
         @media (max-width: 768px) {
-            .content-wrapper { flex-direction: column; gap: 25px; }
-            .logo-seif { width: 100px; }
-            .alert-box { padding: 20px; border-radius: 8px; }
-            h1 { font-size: 1.3rem; }
-            p { font-size: 0.95rem; }
-            .tips { font-size: 0.85rem; padding: 15px; }
-            .link-real { width: 100%; box-sizing: border-box; }
+            .content-wrapper { flex-direction: column; align-items: center; gap: 20px; }
+            .left-content { position: static; }
+            .url-comparison { font-size: 1rem; }
         }
     </style>
 </head>
@@ -177,24 +232,57 @@
         </div>
         
         <div class="alert-box">
-            <h1>⚠️ ¡Atención! Esto podría haber sido un ataque</h1>
-            <p>Acabas de introducir tus credenciales en una página <b>no oficial</b> de la UAM.</p>
-            <p>Este sitio ha sido creado por <b>SEIF</b>, la asociación de ciberseguridad de la Universidad Autónoma de Madrid, para demostrar lo fácil que es clonar una interfaz.</p>
+            <h1>⚠️ ¡Atención! Esto era un ataque de Phishing</h1>
+            <p>Acabas de introducir tus credenciales en una página <b>no oficial</b> de la UAM creada por <b>SEIF</b> (Asociación de Ciberseguridad) para evaluar vulnerabilidades.</p>
             
             <div class="privacy-notice">
-                <p>🔒 <b>Tranquilidad: No hemos guardado tus credenciales.</b> Esta campaña es estrictamente educativa. Los datos que acabas de introducir se han descartado inmediatamente y no se registran en ninguna base de datos.</p>
+                <p>🔒 <b>Tus datos están a salvo:</b> Esta campaña es estrictamente educativa. Tu contraseña no ha sido guardada ni registrada en ninguna base de datos.</p>
+            </div>
+
+            <div class="url-comparison">
+                <div style="font-size: 0.8rem; color: #888; text-transform: uppercase; margin-bottom: 10px;">Análisis Forense de la URL visitada:</div>
+                <div class="url-row url-fake">
+                    Sitio falso: https://moodle.ua<span class="highlight-fake">rn</span>.es
+                </div>
+                <div class="url-row url-real">
+                    Sitio real: https://moodle.ua<span class="highlight-real">m</span>.es
+                </div>
+            </div>
+
+            <div class="quiz-section">
+                <div class="quiz-title">Ponte a prueba: ¿Habrías detectado el ataque?</div>
+                
+                <div class="question-block" id="q1-block">
+                    <div class="question-text">1. ¿Es seguro un sitio web solo porque tiene el candado cerrado (HTTPS) en el navegador?</div>
+                    <div class="quiz-options">
+                        <button class="quiz-btn" onclick="resolverQuiz(this, 'q1', false)">Sí, el candado significa que la web es legítima.</button>
+                        <button class="quiz-btn" onclick="resolverQuiz(this, 'q1', true)">No, el candado solo encripta la conexión. Un atacante también puede usarlo.</button>
+                    </div>
+                    <div id="feedback-q1" class="feedback"></div>
+                </div>
+
+                <div class="question-block" id="q2-block">
+                    <div class="question-text">2. ¿Qué técnica visual usamos para engañarte en la URL?</div>
+                    <div class="quiz-options">
+                        <button class="quiz-btn" onclick="resolverQuiz(this, 'q2', true)">Typosquatting: Usar "r" y "n" juntas para que parezcan una "m".</button>
+                        <button class="quiz-btn" onclick="resolverQuiz(this, 'q2', false)">Añadir un subdominio falso al principio.</button>
+                    </div>
+                    <div id="feedback-q2" class="feedback"></div>
+                </div>
+            </div>
+
+            <div style="background: #050505; border-left: 4px solid #00ffff; padding: 20px; border-radius: 8px; margin-top: 25px; text-align: left; box-shadow: 0 4px 15px rgba(0, 255, 255, 0.05);">
+                <strong style="color: #00ffff; display: block; margin-bottom: 10px; font-size: 1.05rem; text-transform: uppercase; letter-spacing: 0.5px;">Lección principal: Los QRs son herramientas, no enemigos</strong>
+                <p style="margin: 0; font-size: 0.95rem; color: #ececec; text-align: left; line-height: 1.6;">
+                    Los códigos QR <b>no son peligrosos por sí mismos</b>. Son atajos muy útiles para tu día a día. El verdadero riesgo es que actúan como "enlaces ciegos": no puedes saber a qué página te están llevando hasta que ya estás dentro.<br><br>
+                    🛡️ <b>La Regla de Oro:</b> Escanea sin miedo, pero <u>antes de teclear tu contraseña</u> o datos personales, tómate un segundo para verificar que la dirección de la barra superior es exactamente la oficial.
+                </p>
             </div>
             
-            <div class="tips">
-                <strong>¿Cómo podrías haberlo detectado?</strong>
-                <ul>
-                    <li><b>La URL:</b> Fíjate siempre en la barra de direcciones. Si no es <i>moodle.uam.es</i>, desconfía.</li>
-                    <li><b>El certificado:</b> Estar en HTTPS no garantiza que el sitio sea el oficial.</li>
-                    <li><b>El origen:</b> Los QRs son útiles pero pueden ser modificados. Escanea solo fuentes confiables.</li>
-                </ul>
+            <div class="resources">
+                <a href="https://moodle.uam.es" class="btn-link primary">Ir al Moodle Real (Seguro)</a>
+                <a href="#" class="btn-link secondary">Guía de Seguridad UAM / SEIF</a>
             </div>
-            
-            <a href="https://moodle.uam.es" class="link-real">Ir al sitio real de Moodle UAM</a>
         </div>
     </div>
 
@@ -204,30 +292,59 @@
         <p style="color: #ececec; font-size: 1.2rem; font-style: italic; margin-top: 10px; text-align: center;">
             "Microphone check 1, 2, what is this?"<br>Has encontrado las barras ocultas.
         </p>
-        <button onclick="document.getElementById('qtip-easter-egg').style.display='none'" class="link-real" style="cursor: pointer; background: transparent; margin-top: 20px;">
+        <button onclick="document.getElementById('qtip-easter-egg').style.display='none'" class="btn-link primary" style="margin-top: 20px; cursor: pointer;">
             Cerrar Track
         </button>
     </div>
 
     <script>
+        // Lógica del Quiz
+        function resolverQuiz(botonSeleccionado, idPregunta, esCorrecta) {
+            // Desactivamos todos los botones de esta pregunta para evitar múltiples intentos
+            const contenedorOpciones = botonSeleccionado.parentElement;
+            const todosLosBotones = contenedorOpciones.querySelectorAll('.quiz-btn');
+            todosLosBotones.forEach(btn => btn.disabled = true);
+
+            // Mostramos el feedback
+            const feedback = document.getElementById('feedback-' + idPregunta);
+            feedback.style.display = 'block';
+
+            if (esCorrecta) {
+                botonSeleccionado.classList.add('correct');
+                feedback.style.backgroundColor = 'rgba(68, 255, 68, 0.1)';
+                feedback.style.color = '#44ff44';
+                feedback.innerHTML = '✅ <b>¡Correcto!</b> Has asimilado bien el concepto.';
+            } else {
+                botonSeleccionado.classList.add('incorrect');
+                feedback.style.backgroundColor = 'rgba(255, 68, 68, 0.1)';
+                feedback.style.color = '#ff4444';
+                
+                // Explicaciones específicas para fallos
+                if(idPregunta === 'q1') {
+                    feedback.innerHTML = '❌ <b>Incorrecto:</b> Hoy en día, casi el 90% de las webs de phishing usan certificados SSL (el candado) gratuitos para engañar a los usuarios.';
+                } else if (idPregunta === 'q2') {
+                    feedback.innerHTML = '❌ <b>Incorrecto:</b> Fíjate bien en la comparación de arriba. Hemos usado las letras "r" y "n" ("rn") que, leídas rápido, parecen una "m".';
+                }
+            }
+        }
+
+        // Lógica del Easter Egg (Rap)
         let secuenciaKeys = '';
         const palabraClave = 'rap';
         const pantallaOculta = document.getElementById('qtip-easter-egg');
 
         window.addEventListener('keydown', (e) => {
-            // Ignoramos inputs de formularios si los hubiera en el futuro
             if (e.target.tagName.toLowerCase() === 'input' || e.target.tagName.toLowerCase() === 'textarea') return;
 
             secuenciaKeys += e.key.toLowerCase();
             
-            // Limitamos la memoria a los últimos 3 caracteres
             if (secuenciaKeys.length > palabraClave.length) {
                 secuenciaKeys = secuenciaKeys.slice(-palabraClave.length);
             }
 
             if (secuenciaKeys === palabraClave) {
                 pantallaOculta.style.display = 'flex'; 
-                secuenciaKeys = ''; // Reseteamos la trampa
+                secuenciaKeys = ''; 
             }
         });
     </script>

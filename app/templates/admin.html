@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Control SEIF - Campaña UAM</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
             /* Extraídos del logo SEIF */
@@ -49,7 +50,24 @@
             transition: all 0.3s;
         }
         
-        .btn-logout:hover { 
+        .btn-download:hover { 
+            background: var(--accent-cyan); 
+            color: #000;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+
+        .btn-download {
+            background: rgba(0, 255, 255, 0.1);
+            color: var(--accent-cyan);
+            border: 1px solid var(--accent-cyan);
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+        }
+        
+        .btn-download:hover { 
             background: var(--accent-cyan); 
             color: #000;
             box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
@@ -74,7 +92,13 @@
         }
 
         .kpi-card span { color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; font-weight: 700; }
-        .kpi-card div { font-size: 1.8rem; font-weight: 700; margin-top: 5px; color: var(--text-main); }
+    
+        .kpi-number { 
+            font-size: 1.8rem; 
+            font-weight: 700; 
+            margin-top: 5px; 
+            color: var(--text-main); 
+        }
 
         /* --- GRID DE FACULTADES --- */
         .facultades-grid {
@@ -149,6 +173,61 @@
             color: var(--text-muted);
             font-size: 0.8rem;
         }
+
+       /* --- EMBUDO DE CONVERSIÓN (Refinado y Estético) --- */
+        .funnel-container {
+            padding: 5px 10px; /* Reducimos el padding excesivo */
+        }
+        
+        .funnel-step {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px; /* Un poco más de aire entre pasos */
+        }
+        
+        .funnel-step-label {
+            width: 60px; /* Ancho fijo para alinear perfectamente */
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.65rem; /* Texto más técnico y pequeño */
+            text-transform: uppercase;
+            letter-spacing: 1px; /* Separar letras da aspecto de panel de control */
+        }
+        
+        .funnel-bar-bg {
+            flex-grow: 1;
+            background: rgba(255, 255, 255, 0.05); /* Fondo más sutil, menos invasivo */
+            height: 4px; /* Barra más fina y elegante */
+            border-radius: 4px;
+            margin: 0 15px;
+            overflow: hidden; /* Asegura que el relleno no se salga de las curvas */
+        }
+        
+        .funnel-bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 1s cubic-bezier(0.4, 0, 0.2, 1); /* Animación más suave y natural */
+        }
+        
+        /* Colores con un ligero box-shadow para estética Hacker/Cyber */
+        .step-1 { background: var(--accent-cyan); box-shadow: 0 0 5px rgba(0, 255, 255, 0.5); }
+        .step-2 { background: #8844ff; box-shadow: 0 0 5px rgba(136, 68, 255, 0.5); }
+        .step-3 { background: var(--accent-magenta); box-shadow: 0 0 5px rgba(255, 0, 127, 0.5); }
+        
+        .funnel-step-value {
+            min-width: 65px;
+            text-align: right;
+            font-weight: 700;
+            font-size: 0.75rem;
+            color: var(--text-main);
+        }
+        
+        .funnel-step-value span {
+            font-size: 0.6rem;
+            color: var(--text-muted);
+            margin-left: 6px;
+            font-weight: normal;
+        }
     </style>
 </head>
 <body>
@@ -156,6 +235,8 @@
     <header>
         <img src="{{ url_for('static', filename='img/logo.jpg') }}" alt="Logo Asociación SEIF" class="logo-seif">
         <h1>Dashboard de Auditoría - SEIF</h1>
+        <a href="{{ url_for('admin.admin_reset_db') }}" class="btn-logout" style="border-color: var(--accent-magenta); color: var(--accent-magenta);" onclick="return confirm('¿Estás seguro de borrar TODAS las estadísticas y correos?') && confirm('¿ESTÁS COMPLETAMENTE SEGURO? Esta acción es irreversible y borrará los datos del TFG.');">Borrar Datos</a>
+        <a href="{{ url_for('admin.admin_stats_csv') }}" id="btn-download" " class="btn-download"> Descargar Estadísticas (CSV)</a>
         <a href="#" id="btn-logout" class="btn-logout">Cerrar Sesión</a>
     </header>
 
@@ -163,17 +244,47 @@
         <div class="summary-row">
             <div class="kpi-card" style="border-left-color: var(--accent-cyan);">
                 <span>Impactos Totales</span>
-                <div id="total-impacts">0</div>
+                <div id="total-impacts" class="kpi-number">0</div>
+            </div>
+            <div class="kpi-card" style="border-left-color: var(--accent-magenta);">
+                <span>Víctimas Hoy</span>
+                <div class="kpi-number">{{ impactos_hoy }}</div>
             </div>
             <div class="kpi-card">
                 <span>Facultades Activas</span>
-                <div>{{ stats|length }}</div>
+                <div class="kpi-number">{{ stats|length }}</div>
             </div>
             <div class="kpi-card" style="border-left-color: var(--accent-cyan);">
                 <span>Sistema de Persistencia</span>
                 <div style="font-size: 1rem; color: var(--accent-cyan);">Redis AOF Engine</div>
             </div>
         </div>
+
+        {% if embudo %}
+        <div class="kpi-card" style="border-left-color: var(--accent-magenta); margin-bottom: 30px; padding: 15px 25px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <span style="color: var(--text-main); font-size: 0.8rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;">Embudo de Conversión Global (UAM)</span>
+                <span class="status-pill" style="border-color: var(--accent-magenta); color: var(--accent-magenta);">ANÁLISIS DE EFECTIVIDAD</span>
+            </div>
+            <div class="funnel-container" style="background: #0a0a0a; border-radius: 8px; padding: 20px;">
+                <div class="funnel-step">
+                    <div class="funnel-step-label">1. QR</div>
+                    <div class="funnel-bar-bg"><div class="funnel-bar-fill step-1" style="width: {{ embudo['1_qr']['porcentaje'] }}%;"></div></div>
+                    <div class="funnel-step-value">{{ embudo['1_qr']['cantidad'] }} <span>{{ embudo['1_qr']['porcentaje'] }}%</span></div>
+                </div>
+                <div class="funnel-step">
+                    <div class="funnel-step-label">2. Email</div>
+                    <div class="funnel-bar-bg"><div class="funnel-bar-fill step-2" style="width: {{ embudo['2_email']['porcentaje'] }}%;"></div></div>
+                    <div class="funnel-step-value">{{ embudo['2_email']['cantidad'] }} <span>{{ embudo['2_email']['porcentaje'] }}%</span></div>
+                </div>
+                <div class="funnel-step">
+                    <div class="funnel-step-label">3. Clave</div>
+                    <div class="funnel-bar-bg"><div class="funnel-bar-fill step-3" style="width: {{ embudo['3_password']['porcentaje'] }}%;"></div></div>
+                    <div class="funnel-step-value">{{ embudo['3_password']['cantidad'] }} <span>{{ embudo['3_password']['porcentaje'] }}%</span></div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
 
         <div class="facultades-grid">
             {% if not stats %}
@@ -188,6 +299,29 @@
                     <h2>{{ facultad }}</h2>
                     <span class="status-pill">MONITORIZANDO</span>
                 </div>
+
+                {% if embudos_facultades and facultad in embudos_facultades %}
+                {% set ef = embudos_facultades[facultad] %}
+                <div class="funnel-container" style="border-bottom: 1px solid #222; padding: 15px 20px;">
+                    <div style="color: var(--text-muted); font-size: 0.65rem; text-transform: uppercase; margin-bottom: 12px; text-align: center; letter-spacing: 1px;">Conversión del Centro</div>
+                    <div class="funnel-step">
+                        <div class="funnel-step-label">1. QR</div>
+                        <div class="funnel-bar-bg"><div class="funnel-bar-fill step-1" style="width: {{ ef['1_qr']['porcentaje'] }}%;"></div></div>
+                        <div class="funnel-step-value">{{ ef['1_qr']['cantidad'] }} <span>{{ ef['1_qr']['porcentaje'] }}%</span></div>
+                    </div>
+                    <div class="funnel-step">
+                        <div class="funnel-step-label">2. Email</div>
+                        <div class="funnel-bar-bg"><div class="funnel-bar-fill step-2" style="width: {{ ef['2_email']['porcentaje'] }}%;"></div></div>
+                        <div class="funnel-step-value">{{ ef['2_email']['cantidad'] }} <span>{{ ef['2_email']['porcentaje'] }}%</span></div>
+                    </div>
+                    <div class="funnel-step">
+                        <div class="funnel-step-label">3. Clave</div>
+                        <div class="funnel-bar-bg"><div class="funnel-bar-fill step-3" style="width: {{ ef['3_password']['porcentaje'] }}%;"></div></div>
+                        <div class="funnel-step-value">{{ ef['3_password']['cantidad'] }} <span>{{ ef['3_password']['porcentaje'] }}%</span></div>
+                    </div>
+                </div>
+                {% endif %}
+
                 <table>
                     <thead>
                         <tr>
@@ -209,6 +343,14 @@
             </div>
             {% endfor %}
         </div>
+
+        <!-- GRÁFICO DE AFLUENCIA POR HORAS -->
+        <div class="kpi-card" style="margin-top: 30px; border-left-color: var(--accent-cyan);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <span style="color: var(--text-main); font-size: 0.8rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;">Afluencia por Horas (Escaneos QR)</span>
+            </div>
+            <canvas id="afluenciaChart" height="80"></canvas>
+        </div>
     </div>
 
     <footer>
@@ -228,15 +370,55 @@
             e.preventDefault();
             
             // Usamos XMLHttpRequest porque permite pasar credenciales explícitas en el método open().
-            // Esto fuerza al navegador a reemplazar tu contraseña real por "logout".
+            // Esto fuerza al navegador a reemplazar mi contraseña real por "logout".
             var xhr = new XMLHttpRequest();
-            xhr.open("GET", '{{ url_for("admin_cerrar_sesion") }}', true, "logout", "logout");
+            xhr.open("GET", '{{ url_for("admin.admin_cerrar_sesion") }}', true, "logout", "logout");
             xhr.send(null);
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === 4) {
                     document.body.innerHTML = '<div style="text-align:center; margin-top:20vh; color:var(--text-main);"><h2>Sesión cerrada</h2><p style="color:var(--text-muted);">Las credenciales han sido invalidadas. Por tu seguridad, <b>cierra esta pestaña</b>.</p></div>';
                 }
             };
+        });
+
+        // Inicialización del Gráfico de Chart.js
+        const ctx = document.getElementById('afluenciaChart').getContext('2d');
+        
+        // Datos inyectados de forma segura desde Flask
+        const horasData = {{ distribucion_horas | tojson | safe }};
+        const labels = Object.keys(horasData).map(h => h + ":00");
+        const data = Object.values(horasData);
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Número de Escaneos',
+                    data: data,
+                    backgroundColor: 'rgba(0, 255, 255, 0.2)',
+                    borderColor: '#00ffff',
+                    borderWidth: 1,
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { color: '#8a8d91', stepSize: 1 },
+                        grid: { color: 'rgba(255, 255, 255, 0.05)' }
+                    },
+                    x: {
+                        ticks: { color: '#8a8d91' },
+                        grid: { display: false }
+                    }
+                },
+                plugins: {
+                    legend: { display: false }
+                }
+            }
         });
     </script>
 </body>

@@ -37,9 +37,9 @@ La campaña consistió en el despliegue físico de códigos QR maliciosos superp
 
 El despliegue está diseñado bajo una arquitectura de **microservicios orquestados con Docker**, garantizando aislamiento, seguridad y alta disponibilidad.
 
-* **Nginx (`El Escudo`):** Actúa como *Reverse Proxy* (terminación de red). Bloquea el acceso a archivos sensibles, sirve contenido estático y anonimiza la red interna.
-* **Flask + Gunicorn (`El Cerebro`):** Aplicación backend en Python que gestiona la lógica de enrutamiento (escaneo de UUIDs), protección de endpoints y bindeo de sesiones.
-* **Redis (`La Memoria`):** Base de datos clave-valor con persistencia en disco (AOF). Actúa como gestor de sesiones del lado del servidor seguro y registro atómico de impactos estadísticos.
+* **Nginx (`El Escudo`):** Actúa como *Reverse Proxy* (terminación SSL/TLS). Separa el tráfico en dos dominios (`moodle.uarn.es` para el phishing y `seif.eps.uam.es` para el control), bloquea de forma silenciosa el acceso a rutas de administración en el dominio falso, restringe acceso a archivos ocultos y sirve contenido estático local.
+* **Flask + Gunicorn (`El Cerebro`):** Aplicación backend en Python que gestiona la lógica de enrutamiento, flujos de suplantación (Moodle y SSO de Microsoft), protección de endpoints con CSRF dinámicos, bindeo de sesiones y generación del panel analítico.
+* **Redis (`La Memoria`):** Base de datos en memoria con persistencia en disco (AOF). Gestiona sesiones seguras (evitando CWE-312) y realiza un registro atómico (evitando condiciones de carrera) de las estadísticas y timelines (ZADD/SADD).
 
 ---
 
@@ -48,19 +48,19 @@ El despliegue está diseñado bajo una arquitectura de **microservicios orquesta
 ```text
 TFG-UAM-QR-PHISHING-AWARENESS/
 ├── app/
-    │   ├── static/               # Recursos estáticos (imágenes locales, CSS indexado (independiente)
-│   ├── templates/            # Plantillas HTML (Phishing, Concienciación, Panel Admin)
+│   ├── static/               # Recursos estáticos locales (CSS, JS, imágenes de Microsoft y Moodle)
+│   ├── templates/            # Páginas HTML (index.html, ms_email.html, ms_password.html, admin.html, etc.)
 │   ├── .dockerignore         # Exclusión de archivos sensibles para la imagen Docker
-│   ├── Dockerfile            # Construcción de la imagen Python/Gunicorn (CWE-250)
-    │   ├── app.py                # Configuración principal de Flask, seguridad y logging JSON
-    │   ├── redis_db.py           # Conexión a Redis y lógica para estadísticas/embudos
-    │   ├── rutas_admin.py        # Panel de control y endpoints de exportación CSV (protegidos)
-    │   ├── rutas_phishing.py     # Endpoints del clon de Moodle y captura de métricas
-    │   ├── rutas_qrs.py          # Diccionario de mapeo de UUIDs a Facultades y Ubicaciones
-│   ├── requirements.txt      # Dependencias del entorno de Python
+│   ├── Dockerfile            # Configuración de imagen ligera con usuario no privilegiado (appuser)
+│   ├── app.py                # Setup principal, seguridad HTTP (Headers, ProxyFix) y logs en JSON
+│   ├── redis_db.py           # Limitador y registro estadístico usando estructuras avanzadas en Redis
+│   ├── rutas_admin.py        # Endpoints protegidos (Basic Auth) para visualizar y exportar informes CSV
+│   ├── rutas_phishing.py     # Captura por fases, validación de variables y tokens CSRF dinámicos
+│   ├── rutas_qrs.py          # Diccionario de seguimiento por UUID
+│   ├── requirements.txt      # Dependencias del entorno de ejecución (Gunicorn, Flask, Redis, etc.)
 ├── nginx/
 │   └── conf.d/
-│       └── default.conf      # Configuración del proxy inverso y bloqueos de seguridad
+│       └── default.conf      # Enrutamiento inverso, redirecciones 301, y parcheo de seguridad OpSec
 ├── docker-compose.yml        # Orquestador de la infraestructura y red interna (bridge)
 ├── LICENSE.md                # Licencia MIT
 ├── README.md                 # Documentación del proyecto
@@ -78,9 +78,10 @@ Dado su carácter institucional y su exposición en una red pública masiva, el 
 3. **Prevención CSRF (Cross-Site Request Forgery):** Inyección de tokens de un solo uso generados criptográficamente. Se utiliza `secrets.compare_digest()` para mitigar *Timing Attacks*.
 4. **Gestión Segura de Sesiones (CWE-312 y CWE-330):** Implementación de `Flask-Session` basado en Redis. No se envían datos críticos en cookies del cliente, y todas las cookies están firmadas y cifradas.
 5. **Prevención de Condiciones de Carrera (CWE-362):** Las estadísticas se guardan usando operaciones atómicas en memoria (`setnx` y `hincrby` de Redis) para asegurar la integridad de datos frente a picos masivos de tráfico.
-6. **Mitigación de Path Traversal:** Filtros sanitarios en la entrada de parámetros (`/login/<uuid>`) y reglas estrictas en Nginx para denegar el acceso a archivos ocultos (`.env`, `.git`) y código fuente.
-7. **Defensa en Profundidad (Contenedores):** El `Dockerfile` opera bajo un usuario sin privilegios (`appuser`), aislando el proceso en caso de que se logre ejecución remota de código (RCE). Evita **CWE-250**.
-8. **Resiliencia y Alta Disponibilidad (Independencia de Origen):** Los recursos estáticos del portal clonado (CSS, SVG, PNG) se alojan y sirven localmente. Esto elimina la dependencia del servidor legítimo de Moodle, acelerando la carga, garantizando la supervivencia del panel ante caídas del servicio original y eliminando el tráfico saliente que podría alertar a los administradores de red.
+6. **Mitigación de Path Traversal:** Filtros sanitarios en parámetros (`/login/<uuid>`) y bloqueos duros de expresiones regulares en Nginx contra `.env`, `.git`, `.py`, `.sql` o `.yml`.
+7. **Defensa en Profundidad (Contenedores):** El `Dockerfile` compila de forma aislada corriendo Gunicorn sobre un usuario sin privilegios (`appuser`), mitigando el CWE-250 ante posibles escaladas de privilegios.
+8. **Resiliencia y Alta Disponibilidad:** Los recursos estáticos del portal falso se sirven localmente. Esto acelera la carga, evita alertar al SOC (Security Operations Center) de la UAM por la invocación anómala de assets, y garantiza la disponibilidad ante caídas de Moodle.
+9. **Cabeceras de Seguridad y ProxyFix:** Se inyectan respuestas HTTP robustas (`Strict-Transport-Security`, `X-Frame-Options` SAMEORIGIN y `nosniff`), y se sanea la lectura de IPs de *X-Forwarded-For* limitando la confianza a Nginx utilizando el middleware `ProxyFix`.
 
 ---
 

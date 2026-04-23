@@ -52,32 +52,41 @@ M.yui.loader = {modules: {}};
     }
 </style>
 <style>
-  /* Wrapper centrado */
-  .login-wrapper {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    min-height: 100vh;
-  }
+    @media (max-width: 768px) {
+    .login-wrapper {
+        padding: 10px !important;
+    }
 
-  /* Quitar estilos del container genérico en esta página */
-  #page-login-index .login-container {
-    background-color: transparent !important;
-    box-shadow: none !important;
-    padding: 0 !important;
-    width: 100% !important;
-    max-width: 100% !important;
-  }
+    .login-container .loginform {
+        padding: 20px !important;
+    }
 
-  /* La card real es el loginform */
-  #page-login-index .login-container .loginform {
-    margin: 0 auto;
-    background-color: #fff;
-    padding: 2rem;
-    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15);
-    border-radius: .5rem;
-    width: 60% !important;
-  }
+    .loginform.hastwocolumns {
+        display: flex !important;
+        flex-direction: column !important;
+    }
+
+    /* QUITA el padding: 0 que estrangulaba el texto */
+    .left-column, .right-column {
+        width: 100% !important;
+        max-width: 100% !important;
+        flex: 0 0 100% !important;
+        padding-left: 15px !important;
+        padding-right: 15px !important;
+    }
+
+    .left-column {
+        border-bottom: 1px solid #dee2e6;
+        padding-bottom: 20px !important;
+        margin-bottom: 20px !important;
+    }
+
+    /* Título más pequeño en móvil */
+    .column-content > div[style] {
+        font-size: 1.4rem !important;
+        line-height: 1.3 !important;
+    }
+}
 </style>
 </head>
 

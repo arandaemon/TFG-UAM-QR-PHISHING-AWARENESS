@@ -67,6 +67,12 @@ def ms_password():
 @phishing_bp.route('/validar', methods=['POST'])
 @limiter.limit("5 per minute") # Límite por SESIÓN, no por IP.
 def validar():
+    
+    # Si esta sesión ya ha caído una vez le mostramos la página de concienciación para repetidores
+    if session.get('compromised'):
+        logging.info("BLOQUEO OPSEC: Intento repetido de sesión comprometida", extra={"ip": request.remote_addr})
+        return render_template('concienciacion_repetido.html')
+    
     es_nuevo = False
     centro = session.get('centro', 'desconocido')
     ubicacion = session.get('ubicacion', 'desconocida')
@@ -101,6 +107,9 @@ def validar():
     # pero la ignorará y evitará duplicados si ya venía del flujo de Microsoft.
     detector_de_fases('2_email', centro)
     detector_de_fases('3_password', centro)
+    
+    # Marcamos la sesión como comprometida antes de limpiar las variables
+    session['compromised'] = True
             
     session.pop('centro', None)
     session.pop('ubicacion', None)
@@ -109,9 +118,9 @@ def validar():
     return render_template('concienciacion.html') if es_nuevo else render_template('concienciacion_repetido.html')
 
 # Ruta auxiliar para facilitar las pruebas durante el desarrollo
-@phishing_bp.route('/reset')
-def reset_sesion():
-    session.clear() # Borra el visitor_id, el limiter_id y todo lo demás
+#@phishing_bp.route('/reset')
+#def reset_sesion():
+    #session.clear() # Borra el visitor_id, el limiter_id y todo lo demás
     # Para que funcione bien la prueba, redirigimos automáticamente a un QR válido
     # En este caso, simularemos el escaneo en la Facultad de Ciencias (Cafetería)
-    return redirect(url_for('phishing.index_qr', uuid='e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'))
+    #return redirect(url_for('phishing.index_qr', uuid='e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'))

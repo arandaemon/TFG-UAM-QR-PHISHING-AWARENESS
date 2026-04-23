@@ -75,7 +75,7 @@ for nombre_qr in nombres_qrs:
             except:
                 font = ImageFont.load_default()
 
-            draw.text((50, 50), etiqueta_limpia, fill=(180, 180, 180), font=font)s
+            draw.text((50, 50), etiqueta_limpia, fill=(180, 180, 180), font=font)
             
             # Saneamiento de nombre de archivo (Buenas prácticas de seguridad)
             nombre_salida = os.path.basename(f"PDF_{nombre_qr}_con_{nombre_diseno}.pdf")

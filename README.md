@@ -30,6 +30,7 @@ La campaña consistió en el despliegue físico de códigos QR maliciosos superp
 * **Logging Estructurado (JSON):** Clases de formateo personalizadas en Python para exportar todos los eventos (impactos, fallos, etc.) en formato JSON, facilitando su futura integración con sistemas de monitorización (ELK, Grafana).
 * **Concienciación Reactiva e Interactiva:** Tras la captura segura de fases, el sistema redirige automáticamente a una página educativa con referencias visuales sobre el fraude.
 * **Coherencia y Localización:** Todo el entorno, los formularios y el panel están forzados al español, replicando de forma nativa la experiencia promedio esperada por la mayoría del alumnado de la UAM e impidiendo sospechas por traducciones mixtas.
+* **Automatización de Material Físico (Cartelería y Pegatinas):** Suite de herramientas gráficas (Tkinter) y procesamiento de imágenes (Pillow) para la generación masiva de PDFs listos para imprenta. Incrusta dinámicamente los QRs de seguimiento en múltiples diseños de carteles, organizando la salida automáticamente por facultad.
 
 ---
 
@@ -48,6 +49,7 @@ El despliegue está diseñado bajo una arquitectura de **microservicios orquesta
 ```text
 TFG-UAM-QR-PHISHING-AWARENESS/
 ├── app/
+│   ├── carteles/             # Scripts (Pillow/Tkinter) para forjar carteles, pegatinas y automatizar PDFs de imprenta
 │   ├── static/               # Recursos estáticos locales (CSS, JS, imágenes de Microsoft y Moodle)
 │   ├── templates/            # Páginas HTML (index.html, ms_email.html, ms_password.html, admin.html, etc.)
 │   ├── .dockerignore         # Exclusión de archivos sensibles para la imagen Docker
@@ -57,6 +59,7 @@ TFG-UAM-QR-PHISHING-AWARENESS/
 │   ├── rutas_admin.py        # Endpoints protegidos (Basic Auth) para visualizar y exportar informes CSV
 │   ├── rutas_phishing.py     # Captura por fases, validación de variables y tokens CSRF dinámicos
 │   ├── rutas_qrs.py          # Diccionario de seguimiento por UUID
+│   ├── generador_qrs.py      # Script automatizado para la creación de QRs apuntando a los UUIDs
 │   ├── requirements.txt      # Dependencias del entorno de ejecución (Gunicorn, Flask, Redis, etc.)
 ├── nginx/
 │   └── conf.d/

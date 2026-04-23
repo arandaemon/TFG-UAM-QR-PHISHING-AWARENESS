@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # Servicio A 'El cerebro' (Flask)
   app:
@@ -8,7 +6,6 @@ services:
     restart: always
     env_file:
       - .env
-    # No abrimos puertos al exterior, solo vive en la red interna
     healthcheck:
       test: ["CMD-SHELL", "python -c 'import urllib.request; urllib.request.urlopen(\"http://localhost:8000/health\")' || exit 1"]
       interval: 30s
@@ -27,14 +24,15 @@ services:
     container_name: nginx_proxy
     restart: always
     volumes:
-      - ./nginx/conf.d:/etc/nginx/conf.d # Conectamos el contenedor con el archivo de configuración
-      - ./app/static:/app/static # Para que Nginx acceda a las fotos directamente1
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./app/static:/app/static
+      # MAPEAMOS CERTIFICADOS REALES DEL HOST AL CONTENEDOR
+      - /etc/letsencrypt:/etc/letsencrypt:ro
     ports:
-      - "80:80" # Mapeamos el puerto 80 (HTTP por defecto) real al 80 de Nginx
+      - "80:80"
+      - "443:443" # Puerto para HTTPS (el candado verde)
     depends_on: 
       app:
-        # Punto de control para el orquestador (Docker). 
-        # Permite verificar la disponibilidad del servicio   
         condition: service_healthy
     networks:
       - uam_network
@@ -44,14 +42,12 @@ services:
     image: redis:alpine
     container_name: redis_session
     restart: always
-    # Activa el modo AOF
-    command: ["redis-server", "--appendonly", "yes"] # Comprobamos que redis esté funcionando
+    command: ["redis-server", "--appendonly", "yes"]
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 15s
       timeout: 5s
       retries: 3
-    # Mapea la base de datos de la RAM al disco duro real
     volumes:
       - ./redis_data:/data
     networks:
@@ -59,5 +55,4 @@ services:
 
 networks:
   uam_network:
-    driver: bridge # Switch virtual dentro del ordenador
-    # Se pueden comunicar app y nginx sin saber ips gracias al DNS de Docker
+    driver: bridge

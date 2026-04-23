@@ -69,6 +69,12 @@ app.config['SESSION_TYPE'] = 'redis'
 app.config['SESSION_REDIS'] = conexion_redis
 app.config['SESSION_USE_SIGNER'] = True
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=1)
+
+# CORRECCIONES DE SEGURIDAD
+app.config['SESSION_COOKIE_SECURE'] = True      # Solo viaja por HTTPS
+app.config['SESSION_COOKIE_HTTPONLY'] = True    # Inmune a JavaScript (XSS)
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'   # Mitigación CSRF
+
 Session(app)
 
 limiter.init_app(app)

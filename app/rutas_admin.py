@@ -105,6 +105,8 @@ def admin_stats_csv():
         # EMBUDOS POR FACULTAD
         yield "--- EMBUDOS POR FACULTAD ---\n"
         yield "Facultad,Fase,Cantidad,Porcentaje\n"
+        yield "--- EMBUDOS POR ZONA/CENTRO ---\n"
+        yield "Zona,Fase,Cantidad,Porcentaje\n"
         for clave in claves_stats:
             nombre_facultad = clave.decode('utf-8').replace("stats:", "")
             datos_emb_fac_raw = conexion_redis.hgetall(f"embudo_facultad:{nombre_facultad}")
@@ -121,6 +123,8 @@ def admin_stats_csv():
         # IMPACTOS POR UBICACION
         yield "--- IMPACTOS POR UBICACION ---\n"
         yield "Facultad,Ubicacion,Impactos\n"
+        yield "--- IMPACTOS POR UBICACIÓN ---\n"
+        yield "Zona,Ubicacion,Impactos\n"
         for clave in claves_stats:
             nombre_facultad = clave.decode('utf-8').replace("stats:", "")
             datos_raw = conexion_redis.hgetall(clave)

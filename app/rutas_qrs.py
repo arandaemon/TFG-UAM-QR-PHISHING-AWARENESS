@@ -10,11 +10,19 @@ MAPEO_TRACKING = {
     "8242f0ee577002abce207a9b0fc08197777bd3653af10a5eb5b7964639906d4d": {"centro": "Campus UAM Exterior", "ubicacion": "Plaza Mayor y Farolas peatonales"},
 
     # ==========================================
+    # BLOQUE GLOBAL: PEGATINAS (Ahorro de Imprenta)
+    # ==========================================
+    # ENDPINT PARA LOS QRS DE BAÑOS
+    "9c32f80c6a2e4b6c3e98cc1b91369f64981881729b1395bcf69a3c8172545c91": {"centro": "UAM GENERAL", "ubicacion": "Baños (Pegatina Global)"},
+    
+    # ENDPOINT PARA LOS QRS QUE TAPAN SITIOS LEGÍTIMOS
+    "a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2": {"centro": "UAM GENERAL", "ubicacion": "Suplantadores (Sustitución QR)"},
+
+    # ==========================================
     # Centro de Ciencias
     # ==========================================
     "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855": {"centro": "Facultad de Ciencias", "ubicacion": "Cafetería"},
     "5d5b09f6d32c4a92964177d018ccbe25032a2e2b9508bc50d27db127027aeb9e": {"centro": "Facultad de Ciencias", "ubicacion": "Biblioteca"},
-    "9c32f80c6a2e4b6c3e98cc1b91369f64981881729b1395bcf69a3c8172545c91": {"centro": "Facultad de Ciencias", "ubicacion": "Baños"},
     "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08": {"centro": "Facultad de Ciencias", "ubicacion": "Pasillos"},
 
     # ==========================================
@@ -22,7 +30,6 @@ MAPEO_TRACKING = {
     # ==========================================
     "c6f1d2e93b4a2c0f6f4d2f801c3e9f4512b9a1352e6f4812398ab912c49c12b1": {"centro": "Facultad de Económicas", "ubicacion": "Cafetería"},
     "1f4a9b3d2c8e1d7f6a5b4c3d2e1f0a9b8c7d6e5f4a3b2c1d0e9f8a7b6c5d4e3f": {"centro": "Facultad de Económicas", "ubicacion": "Biblioteca"},
-    "a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2": {"centro": "Facultad de Económicas", "ubicacion": "Baños"},
     "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b": {"centro": "Facultad de Económicas", "ubicacion": "Pasillos"},
 
     # ==========================================
@@ -30,7 +37,6 @@ MAPEO_TRACKING = {
     # ==========================================
     "b49a5780a99e2b17f2231dbf54c93547d25272a74c15372de88a75e111bd26cb": {"centro": "Facultad de Derecho", "ubicacion": "Cafetería"},
     "73f8ef7a13d7d4c828e67e340d8dbf43169d27570ea5c1fc112c3f8e56b3dbf1": {"centro": "Facultad de Derecho", "ubicacion": "Biblioteca"},
-    "d2b567dc8914b4231b1c3125e1974728cc3a3f019a12c45161f30141f23b7a12": {"centro": "Facultad de Derecho", "ubicacion": "Baños"},
     "d4735e3a265e16eee03f59718b9b5d03019c07d8b6c51f90da3a666eec13ab35": {"centro": "Facultad de Derecho", "ubicacion": "Pasillos"},
 
     # ==========================================
@@ -38,7 +44,6 @@ MAPEO_TRACKING = {
     # ==========================================
     "e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9": {"centro": "Facultad de Filosofía y Letras", "ubicacion": "Cafetería"},
     "1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b": {"centro": "Facultad de Filosofía y Letras", "ubicacion": "Biblioteca"},
-    "2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c": {"centro": "Facultad de Filosofía y Letras", "ubicacion": "Baños"},
     "4e07408562bedb8b60ce05c1decfe3ad16b72230967de01f640b7e4729b49fce": {"centro": "Facultad de Filosofía y Letras", "ubicacion": "Pasillos"},
 
     # ==========================================
@@ -46,7 +51,6 @@ MAPEO_TRACKING = {
     # ==========================================
     "f1e2d3c4b5a69788796a5b4c3d2e1f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e": {"centro": "Formación de Profesorado", "ubicacion": "Cafetería"},
     "c4b5a69788796a5b4c3d2e1f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b": {"centro": "Formación de Profesorado", "ubicacion": "Biblioteca"},
-    "a69788796a5b4c3d2e1f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d": {"centro": "Formación de Profesorado", "ubicacion": "Baños"},
     "4b227777d4dd1fc61c6f884f48641d02b4d121d3fd328cb08b5531fcacdabf8a": {"centro": "Formación de Profesorado", "ubicacion": "Pasillos"},
 
     # ==========================================
@@ -54,7 +58,6 @@ MAPEO_TRACKING = {
     # ==========================================
     "d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6": {"centro": "Facultad de Medicina", "ubicacion": "Cafetería"},
     "e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7": {"centro": "Facultad de Medicina", "ubicacion": "Biblioteca"},
-    "f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8": {"centro": "Facultad de Medicina", "ubicacion": "Baños"},
     "ef2d127de37b942baad06145e54b0c619a1f22327b2ebbcfbec78f5564afe39d": {"centro": "Facultad de Medicina", "ubicacion": "Pasillos"},
 
     # ==========================================
@@ -62,7 +65,6 @@ MAPEO_TRACKING = {
     # ==========================================
     "0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d": {"centro": "Facultad de Psicología", "ubicacion": "Cafetería"},
     "1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e": {"centro": "Facultad de Psicología", "ubicacion": "Biblioteca"},
-    "2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f": {"centro": "Facultad de Psicología", "ubicacion": "Baños"},
     "e7f6c011776e8db7cd330b54174fd76f7d0216b612387a5ffcfb81e6f0919683": {"centro": "Facultad de Psicología", "ubicacion": "Pasillos"},
 
     # ==========================================
@@ -70,7 +72,6 @@ MAPEO_TRACKING = {
     # ==========================================
     "3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a": {"centro": "Escuela Politécnica Superior", "ubicacion": "Cafetería"},
     "4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b": {"centro": "Escuela Politécnica Superior", "ubicacion": "Biblioteca"},
-    "5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c": {"centro": "Escuela Politécnica Superior", "ubicacion": "Baños"},
     "7902699be42c8a8e46fbbb4501726517e86b22c56a189f7625a6da49081b2451": {"centro": "Escuela Politécnica Superior", "ubicacion": "Pasillos"},
 
     # ==========================================
@@ -78,6 +79,5 @@ MAPEO_TRACKING = {
     # ==========================================
     "6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d": {"centro": "Escuela de Doctorado", "ubicacion": "Cafetería"},
     "7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e": {"centro": "Escuela de Doctorado", "ubicacion": "Biblioteca"},
-    "8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f": {"centro": "Escuela de Doctorado", "ubicacion": "Baños"},
     "2c624232cdd221771294dfbb310aca000a0df6ac8b66b696d90ef06fdefb64a3": {"centro": "Escuela de Doctorado", "ubicacion": "Pasillos"}
 }

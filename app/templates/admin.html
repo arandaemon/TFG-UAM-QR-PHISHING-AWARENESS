@@ -158,12 +158,16 @@
                 <div class="kpi-number">{{ impactos_hoy }}</div>
             </div>
             <div class="kpi-card">
-                <span>Facultades Activas</span>
+                <span>Centros Activos</span>
                 <div class="kpi-number">{{ stats|length }}</div>
             </div>
+            <div class="kpi-card" style="border-left-color: var(--accent-magenta);">
+                <span>Impactos en Baños</span>
+                <div class="kpi-number">{{ stats.get('UAM GENERAL', {}).get('Baños (Pegatina Global)', 0) }}</div>
+            </div>
             <div class="kpi-card" style="border-left-color: var(--accent-cyan);">
-                <span>Persistencia</span>
-                <div style="font-size: 1rem; color: var(--accent-cyan); font-weight: bold; margin-top: 10px;">Redis AOF</div>
+                <span>QRs Suplantados</span>
+                <div class="kpi-number">{{ stats.get('UAM GENERAL', {}).get('Suplantadores (Sustitución QR)', 0) }}</div>
             </div>
         </div>
 
@@ -210,7 +214,11 @@
                 {% if embudos_facultades and facultad in embudos_facultades %}
                 {% set ef = embudos_facultades[facultad] %}
                 <div class="funnel-container" style="border-bottom: 1px solid #222; padding: 15px 20px;">
-                    <div style="color: var(--text-muted); font-size: 0.65rem; text-transform: uppercase; margin-bottom: 12px; text-align: center; letter-spacing: 1px;">Conversión del Centro</div>
+                    {% if "UAM GENERAL" in facultad or "Exterior" in facultad %}
+                        <div style="color: var(--text-muted); font-size: 0.65rem; text-transform: uppercase; margin-bottom: 12px; text-align: center; letter-spacing: 1px;">Conversión de la Zona</div>
+                    {% else %}
+                        <div style="color: var(--text-muted); font-size: 0.65rem; text-transform: uppercase; margin-bottom: 12px; text-align: center; letter-spacing: 1px;">Conversión del Centro</div>
+                    {% endif %}
                     <div class="funnel-step">
                         <div class="funnel-step-label">1. QR</div>
                         <div class="funnel-bar-bg"><div class="funnel-bar-fill step-1" style="width: {{ ef['1_qr']['porcentaje'] }}%;"></div></div>
@@ -239,7 +247,7 @@
                     <tbody>
                         {% for lugar, cuenta in ubicaciones.items() %}
                         <tr>
-                            <td>{{ lugar | capitalize }}</td>
+                            <td>{{ lugar }}</td>
                             <td style="display: flex; justify-content: flex-end;">
                                 <div class="count-circle data-val">{{ cuenta }}</div>
                             </td>

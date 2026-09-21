@@ -21,3 +21,4 @@ appendonly.aof
 .DS_Store
 .vscode/
 .idea/
+nginx/logs/

@@ -93,3 +93,61 @@ sudo fail2ban-client status nginx-ratelimit
 
 ```
 
+Aquí tienes la sección final ampliada con los comandos prácticos de prueba, simulación de ataques y auditoría de baneos, lista para integrarla en tu documento del TFG:
+
+---
+
+## 3. Pruebas de Validación y Auditoría del Sistema de Defensa
+
+Una vez desplegado el sistema, es fundamental verificar su eficacia mediante pruebas de estrés controladas para comprobar que el filtrado de logs y el bloqueo a nivel de kernel (`iptables` / `DOCKER-USER`) responden correctamente ante un escenario de ataque de denegación o scraping automatizado.
+
+### 3.1. Simulación de Ataque por Fuerza Bruta / Scraping
+
+Para saturar el límite de peticiones configurado en Nginx (`limit_req`) y forzar la intervención de Fail2ban, puedes lanzar una ráfaga rápida de peticiones HTTP desde una máquina externa (por ejemplo, utilizando un script de bucle o `curl` concurrente):
+
+```bash
+seq 1 200 | xargs -P 100 -I{} curl -s -o /dev/null -w "%{http_code}\n" https://moodle.uarn.es/login/test_uuid_falso
+
+```
+
+### 3.2. Comprobación del Estado de la Jaula en Fail2ban
+
+Para verificar si el analizador de logs ha detectado los reintentos fallidos y ha aplicado la directiva de baneo sobre la IP del atacante, ejecuta:
+
+```bash
+sudo fail2ban-client status nginx-ratelimit
+
+```
+
+*Este comando mostrará el número total de fallos registrados, el archivo de logs monitorizado y la lista exacta de direcciones IP actualmente bloqueadas.*
+
+### 3.3. Auditoría Directa de las Reglas en el Kernel (iptables)
+
+Dado que el bloqueo se aplica directamente sobre la cadena de reenvío de Docker, puedes inspeccionar el estado del cortafuegos y comprobar que la regla `DROP` se encuentra insertada de forma prioritaria en la primera posición (`-I DOCKER-USER 1`):
+
+```bash
+sudo iptables -L DOCKER-USER -v -n --line-numbers
+
+```
+
+*En la salida de este comando deberás observar la regla de salto o descarte asociada a la IP infractora.*
+
+### 3.4. Verificación del Bloqueo Efectivo (Test de Conectividad)
+
+Para comprobar que el kernel está descartando el tráfico antes de que llegue a los contenedores, intenta realizar una petición contra el servidor desde la IP baneada:
+
+```bash
+curl -v https://moodle.uarn.es/login/
+
+```
+
+*Si el sistema de defensa opera correctamente, la conexión se quedará congelada en estado de espera (`Trying <IP>:443...`) hasta expirar por tiempo de persistencia (`Timeout`), evidenciando que el cortafuegos ha anulado la comunicación a nivel de capa de red.*
+
+### 3.5. Gestión Manual: Indulto (Unban) de Direcciones IP
+
+Si durante las pruebas experimentales necesitas retirar el baneo a una dirección IP de forma anticipada sin esperar a que transcurra el tiempo de expiración (`bantime`), utiliza el cliente de administración:
+
+```bash
+sudo fail2ban-client set nginx-ratelimit unbanip <DIRECCION_IP>
+
+```

@@ -21,6 +21,8 @@ services:
   # Servicio B: 'El Escudo' (Nginx)
   nginx:
     image: nginx:1.25
+    environment:
+      - TZ=Europe/Madrid
     container_name: nginx_proxy
     restart: always
     volumes:
@@ -28,6 +30,8 @@ services:
       - ./app/static:/app/static
       # MAPEAMOS CERTIFICADOS REALES DEL HOST AL CONTENEDOR
       - /etc/letsencrypt:/etc/letsencrypt:ro
+      # Para que Fail2ban pueda leer los logs de Nginx y bloquear IPs abusivas
+      - ./nginx/logs:/var/log/nginx 
     ports:
       - "80:80"
       - "443:443" # Puerto para HTTPS (el candado verde)

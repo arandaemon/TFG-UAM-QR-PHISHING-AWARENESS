@@ -36,7 +36,7 @@ def generar_pegatina_banos(base_path, qr_path, output_path, nombre_facultad):
         # Coordenadas ajustadas:
         # Se baja el centro en Y para despejar la boca y ubicarlo en la lengua.
         center_x = 444
-        center_y = 818  # Subido de 830 a 818 (no tapa los dientes y no se sale por la barba)
+        center_y = 818  # Subido de 830 a 818 
         size_qr  = 210  # Ajustado de 220 a 205 para que mantenga su marco blanco dentro de la silueta
 
         # Redimensionado de alta calidad para preservar bordes nítidos

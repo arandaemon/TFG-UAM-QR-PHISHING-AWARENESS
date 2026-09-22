@@ -5,9 +5,10 @@ import os
 DISEÑOS = {
     "Dumbo":  {"fondo": "cartel_dumbo.png",  "pos": (359, 724),  "size": 405},
     "Menu":   {"fondo": "cartel_menu.png",   "pos": (538, 1407), "size": 336},
-    "Becas":  {"fondo": "cartel_becas.png",  "pos": (117, 141),  "size": 336},
+    "Becas":  {"fondo": "cartel_becas.png",  "pos": (115, 200),  "size": 650},
     "Wuolah": {"fondo": "cartel_wuolah.png", "pos": (1033, 1639), "size": 281},
-    "Mus":    {"fondo": "cartel_mus.png",    "pos": (860, 1510), "size": 348}
+    "Mus":    {"fondo": "cartel_mus.png",    "pos": (860, 1510), "size": 348},
+    "Mesas":  {"fondo": "cartel_mesas.png",  "pos": (841, 2350), "size": 800}
 }
 
 QR_FOLDER = "../qrs_campana"

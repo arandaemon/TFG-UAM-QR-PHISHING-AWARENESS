@@ -9,14 +9,31 @@ MAPEO_TRACKING = {
     "4a44dc15364204a80fe80e9039455cc1608281820fe2b24f1e5233ade6af1dd5": {"centro": "Campus UAM Exterior", "ubicacion": "Marquesinas de Autobús"},
     "8242f0ee577002abce207a9b0fc08197777bd3653af10a5eb5b7964639906d4d": {"centro": "Campus UAM Exterior", "ubicacion": "Plaza Mayor y Farolas peatonales"},
 
+
+    # BAÑOS POR FACULTAD
     # ==========================================
-    # BLOQUE GLOBAL: PEGATINAS (Ahorro de Imprenta)
+    "a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4": {"centro": "Facultad de Ciencias",           "ubicacion": "Baños"},
+    "c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6": {"centro": "Facultad de Económicas",         "ubicacion": "Baños"},
+    "e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8": {"centro": "Facultad de Derecho",            "ubicacion": "Baños"},
+    "a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0": {"centro": "Facultad de Filosofía y Letras", "ubicacion": "Baños"},
+    "c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2": {"centro": "Formación de Profesorado",       "ubicacion": "Baños"},
+    "e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4": {"centro": "Facultad de Medicina",           "ubicacion": "Baños"},
+    "a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6": {"centro": "Facultad de Psicología",         "ubicacion": "Baños"},
+    "c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8": {"centro": "Escuela Politécnica Superior",   "ubicacion": "Baños"},
+    "e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0": {"centro": "Escuela de Doctorado",           "ubicacion": "Baños"},
+
     # ==========================================
-    # ENDPINT PARA LOS QRS DE BAÑOS
-    "9c32f80c6a2e4b6c3e98cc1b91369f64981881729b1395bcf69a3c8172545c91": {"centro": "UAM GENERAL", "ubicacion": "Baños (Pegatina Global)"},
-    
-    # ENDPOINT PARA LOS QRS QUE TAPAN SITIOS LEGÍTIMOS
-    "a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2": {"centro": "UAM GENERAL", "ubicacion": "Suplantadores (Sustitución QR)"},
+    # SUPLANTADORES POR FACULTAD
+    # ==========================================
+    "b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5": {"centro": "Facultad de Ciencias",           "ubicacion": "Suplantadores (Sustitución QR)"},
+    "d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7": {"centro": "Facultad de Económicas",         "ubicacion": "Suplantadores (Sustitución QR)"},
+    "f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9": {"centro": "Facultad de Derecho",            "ubicacion": "Suplantadores (Sustitución QR)"},
+    "b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1": {"centro": "Facultad de Filosofía y Letras", "ubicacion": "Suplantadores (Sustitución QR)"},
+    "d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3": {"centro": "Formación de Profesorado",       "ubicacion": "Suplantadores (Sustitución QR)"},
+    "f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5": {"centro": "Facultad de Medicina",           "ubicacion": "Suplantadores (Sustitución QR)"},
+    "b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7": {"centro": "Facultad de Psicología",         "ubicacion": "Suplantadores (Sustitución QR)"},
+    "d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9": {"centro": "Escuela Politécnica Superior",   "ubicacion": "Suplantadores (Sustitución QR)"},
+    "f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1": {"centro": "Escuela de Doctorado",           "ubicacion": "Suplantadores (Sustitución QR)"},
 
     # ==========================================
     # Centro de Ciencias

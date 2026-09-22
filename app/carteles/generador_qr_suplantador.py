@@ -1,73 +1,71 @@
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont, ImageOps
 import os
 
-# --- CONFIGURACIÓN TÁCTICA ---
-qr_crudo_path = "../qrs_campana/qr_uam_suplantadores.png"
-pegatina_final_path = "pegatina_suplantador_final.png"
+output_folder = "pegatinas_suplantadores"
 
-def forjar_suplantador(input_path, output_path):
-    if not os.path.exists(input_path):
-        print(f"❌ Error: No encuentro el QR en '{input_path}'")
+if not os.path.exists(output_folder):
+    os.makedirs(output_folder)
+
+FACULTADES_SUPLANTADORES = [
+    ("ciencias",   "Facultad de Ciencias"),
+    ("economicas", "Facultad de Económicas"),
+    ("derecho",    "Facultad de Derecho"),
+    ("filosofia",  "Facultad de Filosofía y Letras"),
+    ("educacion",  "Formación de Profesorado"),
+    ("medicina",   "Facultad de Medicina"),
+    ("psicologia", "Facultad de Psicología"),
+    ("eps",        "Escuela Politécnica Superior"),
+    ("doctorado",  "Escuela de Doctorado"),
+]
+
+def generar_suplantador(qr_path, output_path, nombre_facultad):
+    if not os.path.exists(qr_path):
+        print(f"❌ No se encuentra el QR '{qr_path}'")
         return
 
     try:
+        # Abrimos el QR y lo convertimos a escala de grises para detectar los límites negros
+        qr_raw = Image.open(qr_path).convert("L")
+        
+        # Invertimos para recortar cualquier margen blanco exterior que traiga el QR original
+        qr_inv = ImageOps.invert(qr_raw)
+        caja_recorte = qr_inv.getbbox()
+        
+        if caja_recorte:
+            qr_recortado = qr_raw.crop(caja_recorte).convert("RGB")
+        else:
+            qr_recortado = Image.open(qr_path).convert("RGB")
+
+        # Dimensiones compactas y proporcionadas
         lienzo_size = 800
-        bg_color = (248, 248, 248) 
-        lienzo = Image.new('RGB', (lienzo_size, lienzo_size), color=bg_color)
+        borde_grosor = 8
+        margen = 50  # Margen blanco/gris uniforme en los 4 lados (ajustar si se quiere aún más ceñido)
+
+        lienzo = Image.new('RGB', (lienzo_size, lienzo_size), color=(248, 248, 248))
         draw = ImageDraw.Draw(lienzo)
 
-        # Borde
-        grosor_borde = 8
-        draw.rectangle([0, 0, lienzo_size, lienzo_size], outline=(40,40,40), width=grosor_borde)
+        # Recuadro perimetral
+        draw.rectangle([0, 0, lienzo_size - 1, lienzo_size - 1], outline=(40, 40, 40), width=borde_grosor)
 
-        # Cargar QR 4
-        qr_img = Image.open(input_path).convert("RGB")
-        qr_size = 550 
-        qr_resized = qr_img.resize((qr_size, qr_size))
+        # Redimensionamos el QR al espacio interior disponible
+        qr_target_size = lienzo_size - (2 * margen)
+        qr_img = qr_recortado.resize((qr_target_size, qr_target_size), Image.Resampling.LANCZOS)
 
-        # Posicionamos el QR arriba
-        paste_x = (lienzo_size - qr_size) // 2
-        paste_y = 50 
-        lienzo.paste(qr_resized, (paste_x, paste_y))
-
-        # CARGA DE FUENTE ROBUSTA
-        texto = "ESCANEAR AQUÍ"
-        font_size = 85 # Tamaño serio para un lienzo de 800
-        
-        # Rutas comunes en Ubuntu/Debian
-        rutas_fuentes = [
-            "/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf",
-            "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
-            "arial.ttf", 
-            "FreeSans.ttf"
-        ]
-        
-        font = None
-        for ruta in rutas_fuentes:
-            try:
-                font = ImageFont.truetype(ruta, font_size)
-                print(f"✅ Fuente cargada: {ruta}")
-                break
-            except:
-                continue
-
-        if font is None:
-            font = ImageFont.load_default()
-            print("⚠️ ADVERTENCIA: No se encontró ninguna fuente TrueType. El texto saldrá PEQUEÑO.")
-
-        # Centrar texto
-        caja_texto = draw.textbbox((0, 0), texto, font=font)
-        ancho_texto = caja_texto[2] - caja_texto[0]
-        texto_x = (lienzo_size - ancho_texto) // 2
-        texto_y = paste_y + qr_size + 30 # Separación del QR
-
-        draw.text((texto_x, texto_y), texto, fill=(40,40,40), font=font)
+        # Pegado centrado simétricamente
+        lienzo.paste(qr_img, (margen, margen))
 
         lienzo.save(output_path, "PNG")
-        print(f"✅ Pegatina generada: {output_path}")
+        print(f"✅ {nombre_facultad} → {output_path}")
 
     except Exception as e:
-        print(f"❌ Error: {e}")
+        print(f"❌ Error en {nombre_facultad}: {e}")
 
 if __name__ == "__main__":
-    forjar_suplantador(qr_crudo_path, pegatina_final_path)
+    print("🚀 Generando pegatinas suplantadoras ajustadas...")
+
+    for slug, nombre in FACULTADES_SUPLANTADORES:
+        qr_path     = f"../qrs_campana/qr_{slug}_suplantadores.png"
+        output_path = os.path.join(output_folder, f"pegatina_suplantador_{slug}.png")
+        generar_suplantador(qr_path, output_path, nombre)
+
+    print("\n✅ ¡Pegatinas suplantadoras generadas en /pegatinas_suplantadores/!")

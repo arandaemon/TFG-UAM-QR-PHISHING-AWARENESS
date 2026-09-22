@@ -3,7 +3,7 @@ from PIL import Image, ImageTk
 import os
 
 # --- CONFIGURACIÓN ---
-filename = "pegatina_jhon_lenon.png"
+filename = "cartel_becas.png"
 
 if not os.path.exists(filename):
     print(f"❌ Error: No se encuentra '{filename}' en este directorio.")

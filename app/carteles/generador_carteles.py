@@ -13,6 +13,8 @@ DISEÑOS = {
 QR_FOLDER = "../qrs_campana"
 OUTPUT_FOLDER = "pdfs_finales_imprenta"
 
+os.makedirs(OUTPUT_FOLDER, exist_ok=True)
+
 nombres_qrs = [
     "global_renfe", "global_bus", "global_plaza",
     "uam_banos", "uam_suplantadores",
@@ -59,12 +61,14 @@ for nombre_qr in nombres_qrs:
             
             # --- SEPARACIÓN FORMATO A5 ---
             if nombre_diseno == "Mesas":
-                carpeta_destino = os.path.join(OUTPUT_FOLDER, "FORMATO_A5_MESAS", centro)
+                # Todos los A5 van a la misma carpeta, sin subdividir por facultad
+                carpeta_destino = os.path.join(OUTPUT_FOLDER, "FORMATO_A5_MESAS")
             else:
+                # Los A4 se siguen agrupando por facultad
                 carpeta_destino = os.path.join(OUTPUT_FOLDER, "FORMATO_A4_NORMAL", centro)
                 
-            if not os.path.exists(carpeta_destino):
-                os.makedirs(carpeta_destino)
+            # Creación segura del directorio 
+            os.makedirs(carpeta_destino, exist_ok=True)
             
             nombre_salida = os.path.basename(f"PDF_{nombre_qr}_con_{nombre_diseno}.pdf")
             ruta_salida = os.path.join(carpeta_destino, nombre_salida)

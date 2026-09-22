@@ -168,7 +168,7 @@ def admin_cerrar_sesion():
         {'WWW-Authenticate': 'Basic realm="Login de Administrador"'}
     )
 
-@admin_bp.route(f"/{os.environ.get('ADMIN_PATH', 'admin-default')}/reset-db")
+@admin_bp.route(f"/{os.environ.get('ADMIN_PATH', 'admin-default')}/reset-db", methods=['POST'])
 @requiere_auth
 def admin_reset_db():
     # ¡ATENCIÓN! Esto borra la base de datos de Redis entera (SOLO para desarrollo)

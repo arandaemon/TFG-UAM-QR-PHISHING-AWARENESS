@@ -16,10 +16,30 @@ urls = {
     "global_plaza": "https://moodle.uarn.es/login/8242f0ee577002abce207a9b0fc08197777bd3653af10a5eb5b7964639906d4d",
 
     # ==========================================
-    # BLOQUE GLOBAL: PEGATINAS DE IMPRENTA
+    # PEGATINAS DE BAÑOS POR FACULTAD
     # ==========================================
-    "uam_banos": "https://moodle.uarn.es/login/9c32f80c6a2e4b6c3e98cc1b91369f64981881729b1395bcf69a3c8172545c91",
-    "uam_suplantadores": "https://moodle.uarn.es/login/a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2",
+    "ciencias_banos":     "https://moodle.uarn.es/login/a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4",
+    "economicas_banos":   "https://moodle.uarn.es/login/c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6",
+    "derecho_banos":      "https://moodle.uarn.es/login/e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8",
+    "filosofia_banos":    "https://moodle.uarn.es/login/a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0",
+    "educacion_banos":    "https://moodle.uarn.es/login/c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2",
+    "medicina_banos":     "https://moodle.uarn.es/login/e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4",
+    "psicologia_banos":   "https://moodle.uarn.es/login/a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6",
+    "eps_banos":          "https://moodle.uarn.es/login/c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8",
+    "doctorado_banos":    "https://moodle.uarn.es/login/e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0",
+
+    # ==========================================
+    # PEGATINAS SUPLANTADORAS POR FACULTAD
+    # ==========================================
+    "ciencias_suplantadores":   "https://moodle.uarn.es/login/b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5",
+    "economicas_suplantadores": "https://moodle.uarn.es/login/d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7",
+    "derecho_suplantadores":    "https://moodle.uarn.es/login/f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9",
+    "filosofia_suplantadores":  "https://moodle.uarn.es/login/b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1",
+    "educacion_suplantadores":  "https://moodle.uarn.es/login/d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3",
+    "medicina_suplantadores":   "https://moodle.uarn.es/login/f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5",
+    "psicologia_suplantadores": "https://moodle.uarn.es/login/b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7",
+    "eps_suplantadores":        "https://moodle.uarn.es/login/d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9",
+    "doctorado_suplantadores":  "https://moodle.uarn.es/login/f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1",
 
     # ==========================================
     # CIENCIAS

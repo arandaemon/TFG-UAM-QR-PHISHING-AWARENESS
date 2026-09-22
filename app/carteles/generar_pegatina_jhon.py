@@ -1,58 +1,69 @@
 from PIL import Image
 import os
 
-# --- CONFIGURACIÓN ---
 imagen_base_path = "pegatina_jhon_lenon.png"
-# Apuntamos directamente al nodo global de baños que creamos antes
-qr_ejemplo_path = "../qrs_campana/qr_uam_banos.png" 
-imagen_final_path = "pegatina_final_banos.png" 
+output_folder = "pegatinas_banos"
 
-def automatizar_pegatina(base_path, qr_path, output_path):
-    # Comprobar que existen los archivos
+if not os.path.exists(output_folder):
+    os.makedirs(output_folder)
+
+# Alineado con los nuevos QRs por facultad
+FACULTADES_BANOS = [
+    ("ciencias",   "Facultad de Ciencias"),
+    ("economicas", "Facultad de Económicas"),
+    ("derecho",    "Facultad de Derecho"),
+    ("filosofia",  "Facultad de Filosofía y Letras"),
+    ("educacion",  "Formación de Profesorado"),
+    ("medicina",   "Facultad de Medicina"),
+    ("psicologia", "Facultad de Psicología"),
+    ("eps",        "Escuela Politécnica Superior"),
+    ("doctorado",  "Escuela de Doctorado"),
+]
+
+def generar_pegatina_banos(base_path, qr_path, output_path, nombre_facultad):
     if not os.path.exists(base_path):
-        print(f"❌ Error: No se encuentra la imagen base '{base_path}'")
+        print(f"❌ No se encuentra la imagen base '{base_path}'")
         return
     if not os.path.exists(qr_path):
-        print(f"❌ Error: No se encuentra el QR de prueba '{qr_path}'")
+        print(f"❌ No se encuentra el QR '{qr_path}'")
         return
 
     try:
-        # Abrir la imagen base
-        base = Image.open(base_path).convert("RGB")
-        base_w, base_h = base.size
-        print(f"Abierta imagen base: {base_w}x{base_h} px")
+        # Cargamos en RGBA para preservar el canal alfa si la base tiene recorte
+        base = Image.open(base_path).convert("RGBA")
+        qr   = Image.open(qr_path).convert("RGBA")
 
-        # Abrir el Código QR
-        qr = Image.open(qr_path).convert("RGB")
+        # Coordenadas ajustadas:
+        # Se baja el centro en Y para despejar la boca y ubicarlo en la lengua.
+        center_x = 444
+        center_y = 818  # Subido de 830 a 818 (no tapa los dientes y no se sale por la barba)
+        size_qr  = 210  # Ajustado de 220 a 205 para que mantenga su marco blanco dentro de la silueta
+
+        # Redimensionado de alta calidad para preservar bordes nítidos
+        qr_resized = qr.resize((size_qr, size_qr), Image.Resampling.LANCZOS)
         
-        # --- PARÁMETROS QUIRÚRGICOS ---
-        # Coordenadas exactas extraídas con el visor adaptativo
-        center_x = 444  
-        center_y = 800  
-        
-        # ¡EL DOBLE DE GRANDE! Pasamos de 110 a 220 px
-        size_qr_display = 200 
+        paste_x = center_x - (size_qr // 2)
+        paste_y = center_y - (size_qr // 2)
 
-        # Redimensionar el QR
-        qr_resized = qr.resize((size_qr_display, size_qr_display))
-        print(f"QR redimensionado a {size_qr_display}x{size_qr_display}")
+        # Pegamos el QR utilizando su propia máscara si la tuviera
+        base.paste(qr_resized, (paste_x, paste_y), qr_resized)
 
-        # Calcular el punto superior izquierdo de forma dinámica
-        paste_x = center_x - (size_qr_display // 2)
-        paste_y = center_y - (size_qr_display // 2)
-
-        print(f"Inyectando payload visual en X:{paste_x}, Y:{paste_y}...")
-
-        # Pegar el QR encima de la base
-        base.paste(qr_resized, (paste_x, paste_y))
-
-        # Guardar la pegatina final
-        base.save(output_path, "PNG")
-        print(f"✅ ¡Automatización completada con éxito! Revisa '{output_path}'")
+        # Guardamos forzando 300 DPI para la imprenta
+        base.save(output_path, "PNG", dpi=(300, 300))
+        print(f"✅ {nombre_facultad} → {output_path}")
 
     except Exception as e:
-        print(f"❌ Ocurrió un error inesperado: {e}")
+        print(f"❌ Error en {nombre_facultad}: {e}")
 
 if __name__ == "__main__":
-    print("🚀 Iniciando generación de pegatina de baños (Lennon)...")
-    automatizar_pegatina(imagen_base_path, qr_ejemplo_path, imagen_final_path)
+    print("🚀 Generando pegatinas de baños por facultad...")
+
+    if not os.path.exists(imagen_base_path):
+        print(f"❌ Falta la imagen base '{imagen_base_path}'")
+    else:
+        for slug, nombre in FACULTADES_BANOS:
+            qr_path     = f"../qrs_campana/qr_{slug}_banos.png"
+            output_path = os.path.join(output_folder, f"pegatina_banos_{slug}.png")
+            generar_pegatina_banos(imagen_base_path, qr_path, output_path, nombre)
+
+    print("\n✅ ¡Pegatinas de baños generadas en /pegatinas_banos/!")

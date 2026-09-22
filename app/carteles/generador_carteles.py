@@ -1,7 +1,6 @@
 from PIL import Image, ImageDraw, ImageFont
 import os
 
-# COORDENADAS CORREGIDAS
 DISEÑOS = {
     "Dumbo":  {"fondo": "cartel_dumbo.png",  "pos": (359, 724),  "size": 405},
     "Menu":   {"fondo": "cartel_menu.png",   "pos": (538, 1407), "size": 336},
@@ -14,13 +13,9 @@ DISEÑOS = {
 QR_FOLDER = "../qrs_campana"
 OUTPUT_FOLDER = "pdfs_finales_imprenta"
 
-if not os.path.exists(OUTPUT_FOLDER):
-    os.makedirs(OUTPUT_FOLDER)
-
-# Lista de nombres de QRs (Alineada exactamente con las 32 rutas)
 nombres_qrs = [
     "global_renfe", "global_bus", "global_plaza",
-    "uam_banos", "uam_suplantadores", # Pegatinas globales
+    "uam_banos", "uam_suplantadores",
     "ciencias_cafeteria", "ciencias_biblioteca", "ciencias_pasillos",
     "economicas_cafeteria", "economicas_biblioteca", "economicas_pasillos",
     "derecho_cafeteria", "derecho_biblioteca", "derecho_pasillos",
@@ -32,40 +27,24 @@ nombres_qrs = [
     "doctorado_cafeteria", "doctorado_biblioteca", "doctorado_pasillos"
 ]
 
-print("🎨 Generando TODAS las permutaciones organizadas por facultades...")
+print("Generando y separando carteles A4 y carteles de mesa A5...")
 
 for nombre_qr in nombres_qrs:
-    
-    # Saltamos las pegatinas de imprenta
     if nombre_qr in ["uam_banos", "uam_suplantadores"]:
-        print(f" ⏩ {nombre_qr}: Saltando (Es pegatina directa para imprenta, no lleva cartel).")
+        print(f"{nombre_qr}: Saltando (Pegatina de imprenta).")
         continue 
     
-    # Extraemos la facultad
     centro = nombre_qr.split('_')[0].upper()
-    
-    # Creamos la subcarpeta de la facultad
-    subcarpeta_centro = os.path.join(OUTPUT_FOLDER, centro)
-    if not os.path.exists(subcarpeta_centro):
-        os.makedirs(subcarpeta_centro)
-        
     qr_path = os.path.join(QR_FOLDER, f"qr_{nombre_qr}.png")
     
     if not os.path.exists(qr_path):
-        print(f" ⚠️ No se encontró el QR base: {qr_path}")
+        print(f" No se encontró el QR base: {qr_path}")
         continue
 
-    # Por cada ubicación, generamos los 5 diseños
     for nombre_diseno, params in DISEÑOS.items():
         try:
-            # Cargamos el fondo específico
             cartel = Image.open(params["fondo"]).convert("RGB")
-            
-            # Cargamos y redimensionamos QR
-            qr = Image.open(qr_path)
-            qr = qr.resize((params["size"], params["size"]))
-            
-            # Pegamos el QR
+            qr = Image.open(qr_path).resize((params["size"], params["size"]))
             cartel.paste(qr, params["pos"])
             
             draw = ImageDraw.Draw(cartel)
@@ -78,14 +57,22 @@ for nombre_qr in nombres_qrs:
 
             draw.text((50, 50), etiqueta_limpia, fill=(180, 180, 180), font=font)
             
-            # Saneamiento de nombre de archivo (Buenas prácticas de seguridad)
+            # --- SEPARACIÓN FORMATO A5 ---
+            if nombre_diseno == "Mesas":
+                carpeta_destino = os.path.join(OUTPUT_FOLDER, "FORMATO_A5_MESAS", centro)
+            else:
+                carpeta_destino = os.path.join(OUTPUT_FOLDER, "FORMATO_A4_NORMAL", centro)
+                
+            if not os.path.exists(carpeta_destino):
+                os.makedirs(carpeta_destino)
+            
             nombre_salida = os.path.basename(f"PDF_{nombre_qr}_con_{nombre_diseno}.pdf")
-            ruta_salida = os.path.join(subcarpeta_centro, nombre_salida)
+            ruta_salida = os.path.join(carpeta_destino, nombre_salida)
             
             cartel.save(ruta_salida, "PDF", resolution=300.0)
-            print(f" ✅ Generado en /{centro}/: {nombre_salida}")
+            print(f" ✅ Generado: {nombre_salida}")
             
         except Exception as e:
             print(f" ❌ Error en la permutación {nombre_qr} + {nombre_diseno}: {e}")
 
-print(f"\n🚀 ¡Todo ordenado! Revisa las subcarpetas dentro de '{OUTPUT_FOLDER}'.")
+print(f"\n🚀 Todo organizado por tamaños en '{OUTPUT_FOLDER}'.")

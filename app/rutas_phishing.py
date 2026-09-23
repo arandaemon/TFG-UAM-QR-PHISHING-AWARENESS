@@ -110,7 +110,7 @@ def validar():
             "VALIDACION FALLIDA: correo fuera del dominio UAM o vacío",
             extra={"ip": request.remote_addr, "event_type": "invalid_email_domain"}
         )
-    return render_template('index.html', csrf_token=secrets.token_hex(16))
+        return render_template('index.html', csrf_token=secrets.token_hex(16))
     
     if identificador:
         identificador_hash = convertir_email_hash(identificador)

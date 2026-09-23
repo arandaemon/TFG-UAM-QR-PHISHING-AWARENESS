@@ -2,7 +2,7 @@ import logging
 import secrets
 from flask import Blueprint, render_template, session, abort, request, redirect, url_for
 from rutas_qrs import MAPEO_TRACKING
-from redis_db import detector_de_fases, registrar_victima, convertir_email_hash, limiter
+from redis_db import detector_de_fases, registrar_victima, convertir_email_hash, limiter, obtener_huella_ip
 import re
 
 # Para evitar que alguien se le ocurra usar un correo que no sea de la UAM para probar el sistema,

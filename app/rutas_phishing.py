@@ -85,6 +85,14 @@ def validar():
     if session.get('compromised'):
         logging.info("BLOQUEO OPSEC: Intento repetido de sesión comprometida", extra={"ip": request.remote_addr})
         return render_template('concienciacion_repetido.html')
+
+    # === NUEVO ESCUDO IP DIRECTO EN LA RUTA ===
+    # Si borró la cookie pero su IP mandó un formulario hace menos de 5 min:
+    huella_ip = obtener_huella_ip()
+    if conexion_redis.exists(f"huella_impacto:{huella_ip}"):
+        logging.info("BLOQUEO OPSEC: Intento repetido tras borrado de cookies (por IP)", extra={"ip": huella_ip})
+        return render_template('concienciacion_repetido.html')
+    # =============================================
     
     es_nuevo = False
     centro = session.get('centro', 'desconocido')

@@ -2,7 +2,7 @@ import os
 import redis
 import hashlib
 import secrets
-from flask import session, request
+from flask import session
 from flask_limiter import Limiter
 import time
 
@@ -38,19 +38,6 @@ def convertir_email_hash(email):
     email_hash = hashlib.sha256(datos_a_hashear).hexdigest()
     return email_hash
 
-# EXTRACCIÓN DE IP SEGURA (Anti-Spoofing y Anti-DoS) ===
-def obtener_huella_ip():
-    #  La IP real garantizada por el socket de Nginx
-    ip_real = request.headers.get('X-Real-IP')
-    if ip_real:
-        return ip_real
-        
-    # ESCUDO ANTI-DOS Y ANTI-SPOOFING: 
-    # Si falla la cabecera de Nginx, no confiamos en X-Forwarded-For ni en remote_addr.
-    # Aislamos el bloqueo a este usuario concreto usando su cookie.
-    logging.error("ALERTA CRÍTICA: Cabeceras de IP perdidas. Posible bypass de Nginx o IP Spoofing.")
-    return session.get('visitor_id', secrets.token_hex(16))
-
 def detector_de_fases(fase, centro="desconocido"):
     ''' Función para detectar hasta 
         que fase llegó el engaño (embudo)
@@ -65,10 +52,6 @@ def detector_de_fases(fase, centro="desconocido"):
     if not visitor_id:
         visitor_id = secrets.token_hex(16)
         session['visitor_id'] = visitor_id
-
-    # === ESCUDO ANTI-BORRADO DE COOKIES EN EMBUDO ===
-    huella_ip = obtener_huella_ip()
-    clave_huella = f"huella_fase:{fase}:{huella_ip}"
 
     timestamp_actual = int(time.time())
 
@@ -96,10 +79,6 @@ def registrar_victima(centro, ubicacion, identificador_hash):
     if es_nuevo:
         # Le ponemos un tiempo de enfriamiento de 24 horas
         conexion_redis.expire(clave_participante, 86400)
-
-    # === ESCUDO IP TEMPORAL ANTI-FRAUDE ===
-    huella_ip = obtener_huella_ip()
-    clave_ip_impacto = f"huella_impacto:{huella_ip}"
         
     # Extraemos el identificador de sesión de forma segura
     visitor_id = session.get('visitor_id') or session.get('limiter_id')

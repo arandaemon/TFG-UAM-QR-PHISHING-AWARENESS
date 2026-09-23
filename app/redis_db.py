@@ -2,7 +2,7 @@ import os
 import redis
 import hashlib
 import secrets
-from flask import session
+from flask import session, request
 from flask_limiter import Limiter
 import time
 

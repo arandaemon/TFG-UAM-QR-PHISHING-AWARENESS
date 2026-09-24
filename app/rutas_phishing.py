@@ -121,7 +121,7 @@ def validar():
 
     # Control de tiempo humano, nadie lee y envía en menos de 2.5 segundos
     tiempo_transcurrido = time.time() - float(tiempo_creacion)
-    if tiempo_transcurrido < 2.5:
+    if tiempo_transcurrido < 1.0:
         logging.warning(
             "RECHAZADO: Envío automatizado ultrarrápido", 
             extra={"tiempo": tiempo_transcurrido, "ip": request.remote_addr}

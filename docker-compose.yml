@@ -4,6 +4,8 @@ services:
     build: ./app
     container_name: flask_backend
     restart: always
+    environment:
+      - TZ=Europe/Madrid
     env_file:
       - .env
     healthcheck:

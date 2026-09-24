@@ -2,7 +2,8 @@ import logging
 import secrets
 from flask import Blueprint, render_template, session, abort, request, redirect, url_for
 from rutas_qrs import MAPEO_TRACKING
-from redis_db import detector_de_fases, registrar_victima, convertir_email_hash, limiter, comprobar_y_registrar_ip
+from redis_db import detector_de_fases, registrar_victima, convertir_email_hash, limiter, conexion_redis
+import time
 import re
 
 # Para evitar que alguien se le ocurra usar un correo que no sea de la UAM para probar el sistema,
@@ -44,6 +45,11 @@ def portal_principal():
     if not session.get('centro'):
         abort(404)
 
+    # Generamos el token de un solo uso
+    token_antienvenenamiento = secrets.token_urlsafe(16)
+    # Guardamos en Redis: clave con TTL de 15 minutos (900s) y valor = hora exacta actual
+    conexion_redis.set(f"tok_form:{token_antienvenenamiento}", time.time(), ex=900)
+
     token_csrf = secrets.token_hex(16)
     session['csrf_token'] = token_csrf
     
@@ -84,6 +90,10 @@ def ms_password():
     
     token_csrf = secrets.token_hex(16) 
     session['csrf_token'] = token_csrf 
+
+    # TOKEN ANTI-ENVENENAMIENTO (para el login de Microsoft)
+    tok_antienvenenamiento = secrets.token_urlsafe(16)
+    conexion_redis.set(f"tok_form:{tok_antienvenenamiento}", time.time(), ex=900)
     
     # Registramos que el usuario ha llegado
     # Hasta esta fase
@@ -100,15 +110,23 @@ def validar():
     if not session.get('centro'):
         abort(404)
 
-    # Comprobación de IP antes de cualquier otra lógica
-    ip_real = request.remote_addr
-    permitido, ttl = comprobar_y_registrar_ip(ip_real)
-    if not permitido:
+    # Recuperamos y DESTRUIMOS el token a la vez (operación atómica)
+    token_recibido = request.form.get('token_form', '')
+    tiempo_creacion = conexion_redis.getdel(f"tok_form:{token_recibido}")
+
+    # Si no existe, ya fue usado, está vacío o ha caducado
+    if not tiempo_creacion:
+        logging.warning("RECHAZADO: Token inexistente o reutilizado.", extra={"ip": request.remote_addr})
+        return render_template('concienciacion_repetido.html')
+
+    # Control de tiempo humano, nadie lee y envía en menos de 2.5 segundos
+    tiempo_transcurrido = time.time() - float(tiempo_creacion)
+    if tiempo_transcurrido < 2.5:
         logging.warning(
-            "IP BANEADA: intento de acceso a /validar bloqueado",
-            extra={"ip": ip_real, "ttl_restante": ttl, "event_type": "ip_banned"}
+            "RECHAZADO: Envío automatizado ultrarrápido", 
+            extra={"tiempo": tiempo_transcurrido, "ip": request.remote_addr}
         )
-        abort(429)
+        return render_template('concienciacion_repetido.html')
     
     # Si esta sesión ya ha caído una vez le mostramos la página de concienciación para repetidores
     if session.get('compromised'):

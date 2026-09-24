@@ -237,6 +237,13 @@ def admin_cerrar_sesion():
 @admin_bp.route(f"/{os.environ.get('ADMIN_PATH', 'admin-default')}/reset-db", methods=['POST'])
 @requiere_auth
 def admin_reset_db():
-    # ¡ATENCIÓN! Esto borra la base de datos de Redis entera (SOLO para desarrollo)
+    # Confirmación tipo GitHub hay que escribir la frase exacta para borrar.
+    # Validación en SERVIDOR un POST sin la frase correcta NO borra nada
+    # (protege aunque alguien salte el JavaScript del navegador).
+    FRASE_BORRADO = "BORRAR DATOS DEL TFG"
+    confirmacion = request.form.get('confirmacion', '').strip()
+    if confirmacion.upper() != FRASE_BORRADO.upper():
+        return redirect(url_for('admin.admin_stats'))
+    # ¡ATENCIÓN! Esto borra la base de datos de Redis entera.
     conexion_redis.flushdb()
     return redirect(url_for('admin.admin_stats'))

@@ -126,6 +126,19 @@
             .kpi-number { font-size: 1.5rem; }
             .container { padding: 0 10px; }
         }
+
+        /* --- MODAL DE CONFIRMACIÓN DE BORRADO (tipo GitHub) --- */
+        .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.75); z-index:9999; align-items:center; justify-content:center; padding:20px; }
+        .modal-overlay.open { display:flex; }
+        .modal-box { background:var(--card-bg); border:1px solid var(--accent-magenta); border-radius:12px; padding:28px; max-width:460px; width:100%; box-shadow:0 10px 40px rgba(0,0,0,.6); }
+        .modal-box h2 { margin:0 0 12px; color:var(--accent-magenta); font-size:1.15rem; }
+        .modal-box p { color:var(--text-muted); font-size:.9rem; line-height:1.5; }
+        .modal-box code { background:#000; color:var(--accent-magenta); padding:3px 8px; border-radius:5px; font-size:.9rem; user-select:all; }
+        .modal-input { width:100%; box-sizing:border-box; margin:16px 0; padding:10px 12px; background:#000; border:1px solid #444; border-radius:6px; color:var(--text-main); font-size:.95rem; font-family:inherit; }
+        .modal-input:focus { outline:none; border-color:var(--accent-magenta); }
+        .modal-actions { display:flex; gap:12px; justify-content:flex-end; }
+        #btn-confirmar-borrar:disabled { opacity:.4; cursor:not-allowed; }
+        #btn-confirmar-borrar:disabled:hover { background:transparent; color:var(--accent-magenta); box-shadow:none; }
     </style>
 </head>
 <body>
@@ -137,10 +150,7 @@
         </div>
         
         <div class="header-actions">
-            <form action="{{ url_for('admin.admin_reset_db') }}" method="POST" style="margin: 0; width: 100%;">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                <button type="submit" class="btn-action btn-danger" onclick="return confirm('¿ESTÁS COMPLETAMENTE SEGURO? Esta acción es irreversible y borrará los datos del TFG.');">Borrar Datos</button>
-            </form>
+            <button type="button" class="btn-action btn-danger" onclick="abrirModalBorrar()">Borrar Datos</button>
             
             <a href="{{ url_for('admin.admin_stats_csv') }}" class="btn-action">Descargar (CSV)</a>
             <a href="#" id="btn-logout" class="btn-action" style="border-color: #555; color: #aaa;">Salir</a>
@@ -349,6 +359,43 @@
                 },
                 plugins: { legend: { display: false } }
             }
+        });
+    </script>
+
+    <!-- MODAL DE CONFIRMACIÓN DE BORRADO (tipo GitHub) -->
+    <div id="modal-borrar" class="modal-overlay">
+        <div class="modal-box">
+            <h2>⚠️ Borrar todos los datos</h2>
+            <p>Esta acción es <b>irreversible</b>. Se borrarán todos los impactos, embudos y la cuarentena de la campaña.</p>
+            <p>Para confirmar, escribe exactamente:<br><code id="frase-objetivo">BORRAR DATOS DEL TFG</code></p>
+            <form action="{{ url_for('admin.admin_reset_db') }}" method="POST">
+                <input type="text" id="input-confirmacion" name="confirmacion" autocomplete="off"
+                       placeholder="Escribe la frase para confirmar" class="modal-input">
+                <div class="modal-actions">
+                    <button type="button" class="btn-action" onclick="cerrarModalBorrar()">Cancelar</button>
+                    <button type="submit" id="btn-confirmar-borrar" class="btn-action btn-danger" disabled>Borrar definitivamente</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const FRASE_BORRADO = "BORRAR DATOS DEL TFG";
+        function abrirModalBorrar() {
+            var m = document.getElementById('modal-borrar');
+            var i = document.getElementById('input-confirmacion');
+            m.classList.add('open'); i.value = ''; i.focus();
+            document.getElementById('btn-confirmar-borrar').disabled = true;
+        }
+        function cerrarModalBorrar() {
+            document.getElementById('modal-borrar').classList.remove('open');
+        }
+        document.getElementById('input-confirmacion').addEventListener('input', function () {
+            document.getElementById('btn-confirmar-borrar').disabled =
+                (this.value.trim().toUpperCase() !== FRASE_BORRADO.toUpperCase());
+        });
+        document.getElementById('modal-borrar').addEventListener('click', function (e) {
+            if (e.target === this) cerrarModalBorrar();
         });
     </script>
 </body>

@@ -127,6 +127,14 @@ def validar():
             extra={"tiempo": tiempo_transcurrido, "ip": request.remote_addr}
         )
         return render_template('concienciacion_repetido.html')
+
+    # Honeypot para bots tontos que rellenan todos los campos de un formulario sin mirar
+    if request.form.get('website'):
+        logging.warning(
+            "RECHAZADO: Honeypot activado (relleno automático de campos)",
+            extra={"ip": request.remote_addr, "event_type": "honeypot"}
+        )
+        return render_template('concienciacion_repetido.html')
     
     # Si esta sesión ya ha caído una vez le mostramos la página de concienciación para repetidores
     if session.get('compromised'):

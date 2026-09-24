@@ -177,7 +177,8 @@ def validar():
         senales.append('ip')
 
     # Señales fuertes: honeypot y token. Si hay al menos una de estas, o si hay 2 o más señales en total, marcamos como sospechoso.1
-    fuertes = {'honeypot', 'token'}
+    # Ip lo considero fuerte porque victor me confirmo que los alumnos tienen ip única y que no se comparte entre ellos, así que si hay varios envíos desde la misma ip es sospechoso.
+    fuertes = {'honeypot', 'token', 'ip'}
     # Señales débiles: tiempo, csrf, email_invalido, ip. Si hay al menos 2 de estas, también marcamos como sospechoso.
     sospechoso = bool(set(senales) & fuertes) or len(senales) >= 2
 

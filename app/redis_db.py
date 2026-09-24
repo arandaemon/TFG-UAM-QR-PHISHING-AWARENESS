@@ -12,18 +12,15 @@ import time
 # Configuramos la conexión a Redis gracias al DNS interno de Docker Compose
 conexion_redis = redis.from_url('redis://redis:6379')
 
-# ==========================================================================
-# CONFIGURACIÓN DE SEÑALES DE SOSPECHA (MODELO DE CUARENTENA)
-# --------------------------------------------------------------------------
-# Filosofía: NO rechazamos en duro en el momento del envío. Grabamos TODO
+
+# No rechazamos en duro en el momento del envío. Grabamos TODO
 # con sus señales y contamos SOLO lo limpio. Marcar != bloquear, así que
 # podemos ser sensibles con el tiempo humano sin perder usuarios reales:
 # el dudoso queda grabado y, si era humano, cuenta igual.
-# ==========================================================================
 
-# Umbral de "tiempo humano": nadie lee la página y envía en menos de N segundos.
+# Umbral de "tiempo humano" nadie lee la página y envía en menos de N segundos.
 # Al ser una señal (no un bloqueo) podemos subirlo sin castigar a nadie real.
-UMBRAL_TIEMPO_HUMANO = float(os.environ.get("UMBRAL_TIEMPO_HUMANO", "2.5"))
+UMBRAL_TIEMPO_HUMANO = float(os.environ.get("UMBRAL_TIEMPO_HUMANO", "1.0"))
 
 # Señal de velocidad de correos NUEVOS por IP. Desactivada por defecto para
 # no penalizar el NAT de Eduroam mientras no se calibre con logs reales.
@@ -94,13 +91,10 @@ def detector_de_fases(fase, centro="desconocido"):
             conexion_redis.hincrby(f"embudo_facultad:{centro}", fase, 1) # Embudo específico
             conexion_redis.zadd(f"timeline:{centro}:{fase}", {visitor_id: timestamp_actual})
 
-# ==========================================================================
-# SEÑAL: VELOCIDAD DE CORREOS NUEVOS POR IP
-# --------------------------------------------------------------------------
 # Con ~4 correos distintos por IP al día en tráfico legítimo, un pico de
 # decenas de correos distintos desde una IP en una hora canta. Esto NO
 # bloquea (para no castigar al NAT): solo aporta una señal de sospecha más.
-# ==========================================================================
+
 def senal_velocidad_ip(ip, email_hash):
     if not IP_SIGNAL_ACTIVA or not ip or not email_hash:
         return False
@@ -113,15 +107,13 @@ def senal_velocidad_ip(ip, email_hash):
     correos_distintos = conexion_redis.zcard(clave)
     return correos_distintos > IP_UMBRAL_CORREOS
 
-# ==========================================================================
-# CUARENTENA: grabar TODO con señales (fuente de verdad / forense)
-# --------------------------------------------------------------------------
+
 # Cada POST a /validar deja rastro aquí, sea limpio o sospechoso. Esto es lo
 # que permite el "punto dulce": el usuario dudoso ya no se pierde (queda
 # grabado y, si era humano, cuenta), y "N envíos apartados" pasa a ser un
 # resultado presentable para la memoria. Mantenemos además contadores
 # agregados para que el panel se lea en O(1).
-# ==========================================================================
+
 def registrar_evento_cuarentena(email_hash, centro, ubicacion, ip, sospechoso, senales):
     conexion_redis.xadd("cuarentena:eventos", {
         "email_hash": email_hash or "",
@@ -141,14 +133,12 @@ def registrar_evento_cuarentena(email_hash, centro, ubicacion, ip, sospechoso, s
     else:
         conexion_redis.incr("cuarentena:total_limpios")
 
-# ==========================================================================
-# IMPACTO LIMPIO: dedup por HASH DE EMAIL (no por sesión)
-# --------------------------------------------------------------------------
+
 # Este es el arreglo que más protege el dato sin coste de UX: 100 envíos del
 # mismo correo = 1 impacto, tenga la sesión que tenga. Dos alumnos = dos
 # correos = dos; el mismo alumno en dos móviles = un correo = uno.
 # Solo se llama cuando el evento NO es sospechoso.
-# ==========================================================================
+
 def registrar_impacto_limpio(centro, ubicacion, email_hash):
     es_nuevo = conexion_redis.sadd(f"impactos_limpios:{centro}:{ubicacion}", email_hash)
     if es_nuevo == 1:

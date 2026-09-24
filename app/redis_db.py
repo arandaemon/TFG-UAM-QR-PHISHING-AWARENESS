@@ -93,3 +93,41 @@ def registrar_victima(centro, ubicacion, identificador_hash):
         conexion_redis.zadd(f"timeline_ubicacion:{centro}:{ubicacion}", {visitor_id: timestamp_actual})
         
     return bool(es_nuevo)
+
+def comprobar_y_registrar_ip(ip):
+    """
+    Devuelve (permitido, mensaje)
+    Implementa baneo progresivo por comportamiento anómalo en /validar.
+    Umbral: más de 15 hits en 60 segundos desde la misma IP.
+    """
+    ban_key        = f"ban_validar:{ip}"
+    hits_key       = f"hits_validar:{ip}"
+    reincidente_key = f"reincidente_validar:{ip}"
+
+    # ¿Está baneada?
+    ttl = conexion_redis.ttl(ban_key)
+    if ttl > 0:
+        return False, ttl
+
+    # Registrar hit en ventana de 60 segundos
+    hits = conexion_redis.incr(hits_key)
+    if hits == 1:
+        conexion_redis.expire(hits_key, 60)
+
+    # ¿Supera el umbral?
+    if hits > 15:
+        es_reincidente = conexion_redis.exists(reincidente_key)
+
+        if es_reincidente:
+            ban_segundos = 600  # 10 minutos
+        else:
+            ban_segundos = 300  # 5 minutos
+            # Recordamos que ya fue baneada durante 30 min
+            # (tiempo razonable antes de que Eduroam reasigne la IP)
+            conexion_redis.setex(reincidente_key, 1800, 1)
+
+        conexion_redis.setex(ban_key, ban_segundos, 1)
+        conexion_redis.delete(hits_key)  # reseteamos el contador
+        return False, ban_segundos
+
+    return True, 0

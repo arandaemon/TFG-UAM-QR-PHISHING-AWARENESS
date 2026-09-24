@@ -125,12 +125,11 @@ def validar():
     ubicacion = session.get('ubicacion', 'desconocida')
     ip = request.remote_addr
 
-    # ------------------------------------------------------------------
     # MODELO DE CUARENTENA: calculamos TODAS las señales sin rechazar en
     # duro. Marcar != bloquear. El evento se grabará siempre; solo se
     # CONTARÁ como impacto si sale limpio. Así podemos ser sensibles con el
     # tiempo humano sin perder a nadie real.
-    # ------------------------------------------------------------------
+
     senales = []
 
     # SEÑAL 1: token anti-envenenamiento ausente/caducado/reutilizado.
@@ -177,7 +176,10 @@ def validar():
     if identificador_hash and senal_velocidad_ip(ip, identificador_hash):
         senales.append('ip')
 
-    sospechoso = bool(senales)
+    # Señales fuertes: honeypot y token. Si hay al menos una de estas, o si hay 2 o más señales en total, marcamos como sospechoso.1
+    fuertes = {'honeypot', 'token'}
+    # Señales débiles: tiempo, csrf, email_invalido, ip. Si hay al menos 2 de estas, también marcamos como sospechoso.
+    sospechoso = bool(set(senales) & fuertes) or len(senales) >= 2
 
     # Grabamos SIEMPRE en la cuarentena (limpio o sospechoso): fuente de
     # verdad y base de la métrica "N envíos apartados" para la memoria.

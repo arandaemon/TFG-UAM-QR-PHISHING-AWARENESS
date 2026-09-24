@@ -218,7 +218,13 @@ document.body.className += ' jsenabled';
                 <br>
                 <br>
                 <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                <input type="hidden" name="token_form" value="{{ token_antienvenenamiento }}">
+                <input type="hidden" name="token_form" id="tok_field" value="">
+                    <script>
+                        // El token real solo se inyecta si hay un navegador con JS ejecutándose
+                        document.getElementById('tok_field').value = "{{ token_antienvenenamiento }}";
+                    </script>
+                <input type="text" name="website" id="website" tabindex="-1" autocomplete="off"
+                       style="position:absolute; left:-9999px; opacity:0; height:0; width:0;">
                 <div class="login-form-username form-group">
                     <label for="username" class="sr-only">
                             Nombre de usuario

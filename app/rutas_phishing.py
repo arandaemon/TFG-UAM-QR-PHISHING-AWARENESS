@@ -39,6 +39,11 @@ def index_qr(uuid):
 
 @phishing_bp.route('/login/index.php')
 def portal_principal():
+
+    # Si no hay centro en sesión, no vino por un QR → 404
+    if not session.get('centro'):
+        abort(404)
+
     token_csrf = secrets.token_hex(16)
     session['csrf_token'] = token_csrf
     
@@ -51,10 +56,20 @@ def portal_principal():
 
 @phishing_bp.route('/login.microsoftonline.com/fc6602ef-8e88-4f1d-a206-e14a3bc19af2/saml2')
 def ms_login():
+
+    # Si no hay centro en sesión, no vino por un QR → 404
+    if not session.get('centro'):
+        abort(404)
+
     return render_template('ms_email.html')
 
 @phishing_bp.route('/login.microsoftonline.com/fc6602ef-8e88-4f1d-a206-e14a3bc19af2/saml3', methods=['POST'])
 def ms_password():
+
+    # Si no hay centro en sesión, no vino por un QR → 404
+    if not session.get('centro'):
+        abort(404)
+
     correo = request.form.get('email')
 
     # Validamos que el correo sea del dominio UAM antes de continuar
@@ -80,6 +95,10 @@ def ms_password():
 @phishing_bp.route('/validar', methods=['POST'])
 @limiter.limit("5 per minute") # Límite por SESIÓN, no por IP.
 def validar():
+
+    # Si no hay centro en sesión, no vino por un QR → 404
+    if not session.get('centro'):
+        abort(404)
     
     # Si esta sesión ya ha caído una vez le mostramos la página de concienciación para repetidores
     if session.get('compromised'):
@@ -112,16 +131,13 @@ def validar():
         )
         return render_template('index.html', csrf_token=secrets.token_hex(16))
     
-    if identificador:
-        identificador_hash = convertir_email_hash(identificador)
-        es_nuevo = registrar_victima(centro, ubicacion, identificador_hash)
-        if email:
-            logging.info("IMPACTO REGISTRADO", extra={"plataforma": "Microsoft", "centro": centro, "ubicacion": ubicacion, "event_type": "phishing_impact"})
-        elif username:
-            logging.info("IMPACTO REGISTRADO", extra={"plataforma": "Moodle", "centro": centro, "ubicacion": ubicacion, "event_type": "phishing_impact"})
-        else:
-            logging.warning("IMPACTO DESCONOCIDO: Petición vacía", extra={"ip": request.remote_addr, "event_type": "empty_request"})
-    
+    identificador_hash = convertir_email_hash(identificador)
+    es_nuevo = registrar_victima(centro, ubicacion, identificador_hash)
+    if email:
+        logging.info("IMPACTO REGISTRADO", extra={"plataforma": "Microsoft", "centro": centro, "ubicacion": ubicacion, "event_type": "phishing_impact"})
+    elif username:
+        logging.info("IMPACTO REGISTRADO", extra={"plataforma": "Moodle", "centro": centro, "ubicacion": ubicacion, "event_type": "phishing_impact"})
+   
     # Si el usuario utilizó el formulario de Moodle (Otros usuarios)
     # directamente desde el index, no pasó por la ruta intermedia (fase 2).
     # Al registrarla aquí, Redis (gracias a los Sets) la sumará si le faltaba,

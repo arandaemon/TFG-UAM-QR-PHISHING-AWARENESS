@@ -79,7 +79,31 @@ def admin_stats():
         hora = datetime.fromtimestamp(score).strftime("%H")
         distribucion_horas[hora] += 1
 
-    return render_template('admin.html', stats=todas_las_stats, embudo=estadisticas_embudo, embudos_facultades=embudos_facultades, impactos_hoy=impactos_hoy, distribucion_horas=distribucion_horas)
+    # MÉTRICAS DE CUARENTENA (integridad del dato)
+    # "Impactos limpios" son los que sí cuentan (dedup por email). Los
+    # "apartados" son envíos marcados como sospechosos que NO contaminan la
+    # estadística pero quedan grabados para el análisis forense de la memoria.
+    total_limpios = int(conexion_redis.get("cuarentena:total_limpios") or 0)
+    total_sospechosos = int(conexion_redis.get("cuarentena:total_sospechosos") or 0)
+    total_eventos = total_limpios + total_sospechosos
+    senales_raw = conexion_redis.hgetall("cuarentena:senales")
+    desglose_senales = {k.decode('utf-8'): int(v.decode('utf-8')) for k, v in senales_raw.items()}
+    cuarentena = {
+        "total_eventos": total_eventos,
+        "limpios": total_limpios,
+        "sospechosos": total_sospechosos,
+        "senales": desglose_senales,
+    }
+
+    return render_template(
+        'admin.html',
+        stats=todas_las_stats,
+        embudo=estadisticas_embudo,
+        embudos_facultades=embudos_facultades,
+        impactos_hoy=impactos_hoy,
+        distribucion_horas=distribucion_horas,
+        cuarentena=cuarentena,
+    )
 
 # PANEL DE EXPORTACIÓN CSV
 @admin_bp.route(f"/{os.environ.get('ADMIN_PATH', 'admin-default')}/csv")
@@ -147,7 +171,7 @@ def admin_stats_csv():
         
         # SERIE TEMPORAL POR UBICACIONES
         yield "--- SERIE TEMPORAL DE IMPACTOS POR UBICACION ---\n"
-        yield "Centro,Ubicacion,VisitorID,Fecha,Hora,Timestamp\n"
+        yield "Centro,Ubicacion,EmailHash,Fecha,Hora,Timestamp\n"
         claves_timeline_ub = list(conexion_redis.scan_iter(match="timeline_ubicacion:*"))
         for clave in claves_timeline_ub:
             partes = clave.decode('utf-8').split(':')
@@ -157,7 +181,49 @@ def admin_stats_csv():
                 for miembro, score in elementos:
                     dt = datetime.fromtimestamp(score)
                     yield f'"{centro}","{ubicacion}","{miembro.decode("utf-8")}","{dt.strftime("%Y-%m-%d")}","{dt.strftime("%H:%M:%S")}",{int(score)}\n'
-                
+
+        yield "\n"
+
+        # RESUMEN DE CUARENTENA (integridad del dato)
+        total_limpios = int(conexion_redis.get("cuarentena:total_limpios") or 0)
+        total_sospechosos = int(conexion_redis.get("cuarentena:total_sospechosos") or 0)
+        yield "--- RESUMEN DE CUARENTENA ---\n"
+        yield "Metrica,Valor\n"
+        yield f'"Eventos totales",{total_limpios + total_sospechosos}\n'
+        yield f'"Impactos limpios (contados)",{total_limpios}\n'
+        yield f'"Envios apartados (sospechosos)",{total_sospechosos}\n'
+        yield "\n"
+
+        # DESGLOSE POR SEÑAL DE SOSPECHA
+        yield "--- DESGLOSE POR SEÑAL DE SOSPECHA ---\n"
+        yield "Señal,Ocurrencias\n"
+        senales_raw = conexion_redis.hgetall("cuarentena:senales")
+        for k, v in senales_raw.items():
+            yield f'"{k.decode("utf-8")}",{int(v.decode("utf-8"))}\n'
+        yield "\n"
+
+        # VOLCADO FORENSE DE LA CUARENTENA (stream crudo, por bloques)
+        yield "--- EVENTOS DE CUARENTENA (FORENSE) ---\n"
+        yield "Fecha,Hora,Centro,Ubicacion,EmailHash,IP,Sospechoso,Señales\n"
+        ultimo_id = "-"
+        while True:
+            # Leemos el stream en bloques de 500 para no saturar la RAM
+            lote = conexion_redis.xrange("cuarentena:eventos", min=ultimo_id, max="+", count=500)
+            if not lote:
+                break
+            for entrada_id, campos in lote:
+                d = {k.decode('utf-8'): v.decode('utf-8') for k, v in campos.items()}
+                try:
+                    dt = datetime.fromtimestamp(int(d.get("ts", 0)))
+                    fecha, hora = dt.strftime("%Y-%m-%d"), dt.strftime("%H:%M:%S")
+                except (ValueError, OSError):
+                    fecha, hora = "", ""
+                sospechoso_txt = "SI" if d.get("sospechoso") == "1" else "NO"
+                yield (f'"{fecha}","{hora}","{d.get("centro","")}","{d.get("ubicacion","")}",'
+                       f'"{d.get("email_hash","")}","{d.get("ip","")}","{sospechoso_txt}","{d.get("senales","")}"\n')
+            # El siguiente bloque empieza justo después del último id leído
+            ultimo_id = "(" + lote[-1][0].decode('utf-8')
+
     return Response(generar_csv(), mimetype="text/csv", headers={"Content-Disposition": "attachment; filename=estadisticas.csv"})
 
 @admin_bp.route(f"/cerrar-sesion")

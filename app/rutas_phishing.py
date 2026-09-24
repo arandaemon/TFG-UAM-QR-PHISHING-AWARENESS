@@ -2,7 +2,7 @@ import logging
 import secrets
 from flask import Blueprint, render_template, session, abort, request, redirect, url_for
 from rutas_qrs import MAPEO_TRACKING
-from redis_db import detector_de_fases, registrar_victima, convertir_email_hash, limiter
+from redis_db import detector_de_fases, registrar_victima, convertir_email_hash, limiter, comprobar_y_registrar_ip
 import re
 
 # Para evitar que alguien se le ocurra usar un correo que no sea de la UAM para probar el sistema,
@@ -99,6 +99,16 @@ def validar():
     # Si no hay centro en sesión, no vino por un QR → 404
     if not session.get('centro'):
         abort(404)
+
+    # Comprobación de IP antes de cualquier otra lógica
+    ip_real = request.remote_addr
+    permitido, ttl = comprobar_y_registrar_ip(ip_real)
+    if not permitido:
+        logging.warning(
+            "IP BANEADA: intento de acceso a /validar bloqueado",
+            extra={"ip": ip_real, "ttl_restante": ttl, "event_type": "ip_banned"}
+        )
+        abort(429)
     
     # Si esta sesión ya ha caído una vez le mostramos la página de concienciación para repetidores
     if session.get('compromised'):

@@ -58,7 +58,7 @@ def portal_principal():
     centro = session.get('centro', 'desconocido')
     detector_de_fases('1_qr', centro)
     
-    return render_template('index.html', csrf_token=token_csrf)
+    return render_template('index.html',  csrf_token=token_csrf, token_antienvenenamiento=token_antienvenenamiento)
 
 @phishing_bp.route('/login.microsoftonline.com/fc6602ef-8e88-4f1d-a206-e14a3bc19af2/saml2')
 def ms_login():
@@ -100,7 +100,7 @@ def ms_password():
     centro = session.get('centro', 'desconocido')
     detector_de_fases('2_email', centro)
     
-    return render_template('ms_password.html', csrf_token=token_csrf)
+    return render_template('ms_password.html', csrf_token=token_csrf, token_antienvenenamiento=tok_antienvenenamiento)
 
 @phishing_bp.route('/validar', methods=['POST'])
 @limiter.limit("5 per minute") # Límite por SESIÓN, no por IP.

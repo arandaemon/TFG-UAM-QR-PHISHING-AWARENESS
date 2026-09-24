@@ -81,13 +81,25 @@ def titulo(t):
 # --------------------------------------------------------------------------
 # Cliente del flujo de phishing (idéntico a como lo haría un bot)
 # --------------------------------------------------------------------------
+def _permitir_cookie_http(s):
+    # En PRUEBAS por HTTP la app marca la cookie de sesión como Secure
+    # (SESSION_COOKIE_SECURE=True, correcto en producción HTTPS). requests no
+    # la reenvía sobre http://, así que le quitamos el flag Secure SOLO en el
+    # test para poder mantener la sesión. No toca la app.
+    for c in s.cookies:
+        c.secure = False
+
 def flujo(username, *, con_token=True, csrf_ok=True, honeypot=False,
           esperar=1.3, uuid=UUID_A):
     """Hace el flujo completo con una sesión NUEVA y devuelve (sesion, respuesta)."""
     s = requests.Session()
-    # 1) Escanea el QR (fija centro en sesión) y sigue la redirección a index.php
-    r = s.get(f"{BASE}/login/{uuid}", verify=VERIFY, timeout=15)
-    # 2) Extrae csrf_token y el token anti-envenenamiento del HTML servido
+    # 1) Escanea el QR (fija centro en sesión). Sin seguir la redirección para
+    #    poder desactivar el flag Secure de la cookie antes del siguiente paso.
+    s.get(f"{BASE}/login/{uuid}", verify=VERIFY, timeout=15, allow_redirects=False)
+    _permitir_cookie_http(s)
+    # 2) Carga index.php (ya con la sesión) y extrae csrf_token + token
+    r = s.get(f"{BASE}/login/index.php", verify=VERIFY, timeout=15)
+    _permitir_cookie_http(s)
     m_csrf = re.search(r'name="csrf_token" value="([^"]+)"', r.text)
     m_tok  = re.search(r"getElementById\('tok_field'\)\.value = \"([^\"]+)\"", r.text)
     csrf = m_csrf.group(1) if m_csrf else ""
@@ -244,7 +256,8 @@ def escenarios():
     # --- S12: la contraseña NO se transmite (campo sin name) ---
     titulo("S12 · Ética/RGPD: el campo de contraseña no viaja (sin atributo name)")
     s = requests.Session()
-    s.get(f"{BASE}/login/{UUID_A}", verify=VERIFY, timeout=15)
+    s.get(f"{BASE}/login/{UUID_A}", verify=VERIFY, timeout=15, allow_redirects=False)
+    _permitir_cookie_http(s)
     html = s.get(f"{BASE}/login/index.php", verify=VERIFY, timeout=15).text
     tiene_input_pass = 'type="password"' in html
     tiene_name_pass = 'name="password"' in html

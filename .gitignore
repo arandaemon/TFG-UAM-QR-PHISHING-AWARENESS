@@ -22,3 +22,6 @@ appendonly.aof
 .vscode/
 .idea/
 nginx/logs/
+
+# Cookies de pruebas (curl/libcurl) — no deben versionarse
+cookies.txt

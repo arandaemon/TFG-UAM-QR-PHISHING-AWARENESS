@@ -233,7 +233,9 @@ document.body.className += ' jsenabled';
                 </div>
                 <div class="login-form-password form-group">
                     <label for="password" class="sr-only">Contraseña</label>
-                    <input type="password" name="password" id="password" value="" class="form-control form-control-lg" placeholder="Contraseña" autocomplete="current-password" required>
+                    <!-- Simulación ética: el campo se muestra (realismo), pero SIN name -->
+                    <!-- para que el navegador NUNCA envíe la contraseña al servidor. -->
+                    <input type="password" id="password" value="" class="form-control form-control-lg" placeholder="Contraseña" autocomplete="off" required>
                 </div>
                 <div class="login-form-submit form-group">
                     <button class="btn btn-primary btn-block btn-lg" type="submit" id="loginbtn">Acceder</button>

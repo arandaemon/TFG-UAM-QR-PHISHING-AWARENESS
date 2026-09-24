@@ -2,7 +2,16 @@ import logging
 import secrets
 from flask import Blueprint, render_template, session, abort, request, redirect, url_for
 from rutas_qrs import MAPEO_TRACKING
-from redis_db import detector_de_fases, registrar_victima, convertir_email_hash, limiter, conexion_redis
+from redis_db import (
+    detector_de_fases,
+    convertir_email_hash,
+    registrar_evento_cuarentena,
+    registrar_impacto_limpio,
+    senal_velocidad_ip,
+    limiter,
+    conexion_redis,
+    UMBRAL_TIEMPO_HUMANO,
+)
 import time
 import re
 
@@ -103,92 +112,106 @@ def ms_password():
     return render_template('ms_password.html', csrf_token=token_csrf, token_antienvenenamiento=tok_antienvenenamiento)
 
 @phishing_bp.route('/validar', methods=['POST'])
-@limiter.limit("5 per minute") # Límite por SESIÓN, no por IP.
+@limiter.limit("5 per minute") # Límite por SESIÓN (anti-flood), no por IP.
 def validar():
 
     # Si no hay centro en sesión, no vino por un QR → 404
+    # (Esto es un guard de enrutamiento, igual para todos: no revela nada
+    #  sobre si un envío "contó" o no, así que no crea oráculo.)
     if not session.get('centro'):
         abort(404)
 
-    # Recuperamos y DESTRUIMOS el token a la vez (operación atómica)
-    token_recibido = request.form.get('token_form', '')
-    tiempo_creacion = conexion_redis.getdel(f"tok_form:{token_recibido}")
-
-    # Si no existe, ya fue usado, está vacío o ha caducado
-    if not tiempo_creacion:
-        logging.warning("RECHAZADO: Token inexistente o reutilizado.", extra={"ip": request.remote_addr})
-        return render_template('concienciacion_repetido.html')
-
-    # Control de tiempo humano, nadie lee y envía en menos de 2.5 segundos
-    tiempo_transcurrido = time.time() - float(tiempo_creacion)
-    if tiempo_transcurrido < 1.0:
-        logging.warning(
-            "RECHAZADO: Envío automatizado ultrarrápido", 
-            extra={"tiempo": tiempo_transcurrido, "ip": request.remote_addr}
-        )
-        return render_template('concienciacion_repetido.html')
-
-    # Honeypot para bots tontos que rellenan todos los campos de un formulario sin mirar
-    if request.form.get('website'):
-        logging.warning(
-            "RECHAZADO: Honeypot activado (relleno automático de campos)",
-            extra={"ip": request.remote_addr, "event_type": "honeypot"}
-        )
-        return render_template('concienciacion_repetido.html')
-    
-    # Si esta sesión ya ha caído una vez le mostramos la página de concienciación para repetidores
-    if session.get('compromised'):
-        logging.info("BLOQUEO OPSEC: Intento repetido de sesión comprometida", extra={"ip": request.remote_addr})
-        return render_template('concienciacion_repetido.html')
-    
-    es_nuevo = False
     centro = session.get('centro', 'desconocido')
     ubicacion = session.get('ubicacion', 'desconocida')
-    email = session.get('email') 
-    username = request.form.get('username') 
+    ip = request.remote_addr
+
+    # ------------------------------------------------------------------
+    # MODELO DE CUARENTENA: calculamos TODAS las señales sin rechazar en
+    # duro. Marcar != bloquear. El evento se grabará siempre; solo se
+    # CONTARÁ como impacto si sale limpio. Así podemos ser sensibles con el
+    # tiempo humano sin perder a nadie real.
+    # ------------------------------------------------------------------
+    senales = []
+
+    # SEÑAL 1: token anti-envenenamiento ausente/caducado/reutilizado.
+    # Lo recuperamos y DESTRUIMOS a la vez (operación atómica).
+    token_recibido = request.form.get('token_form', '')
+    tiempo_creacion = conexion_redis.getdel(f"tok_form:{token_recibido}") if token_recibido else None
+    if not tiempo_creacion:
+        senales.append('token')
+    else:
+        # SEÑAL 2: tiempo demasiado rápido para ser humano. Al ser señal
+        # (no bloqueo) el umbral puede ser alto sin castigar a nadie.
+        tiempo_transcurrido = time.time() - float(tiempo_creacion)
+        if tiempo_transcurrido < UMBRAL_TIEMPO_HUMANO:
+            senales.append('tiempo')
+
+    # SEÑAL 3: honeypot (campo oculto que solo rellenan los bots).
+    if request.form.get('website'):
+        senales.append('honeypot')
+
+    # SEÑAL 4: CSRF ausente/no coincidente. Aquí no protege un estado
+    # sensible (no hay login real): lo usamos como heurística de bot, así
+    # que lo tratamos como señal en vez de abortar (evita crear oráculo).
     token_en_sesion = session.get('csrf_token')
     token_del_formulario = request.form.get('csrf_token')
-
     if not token_en_sesion or not token_del_formulario or not secrets.compare_digest(token_en_sesion, token_del_formulario):
-        logging.warning(
-            "FALLO CSRF: Intento de validación sin token válido.",
-            extra={"ip": request.remote_addr, "event_type": "csrf_failure"}
-        )
-        abort(403)
-        
+        senales.append('csrf')
     session.pop('csrf_token', None)
+
+    # Identificador: email del flujo Microsoft, o usuario del flujo Moodle.
+    email = session.get('email')
+    username = request.form.get('username')
     identificador = email if email else username
 
-    # Para evitar que alguien use un correo que no sea de la UAM, validamos el dominio del correo
-    if not identificador or not PATRON_CORREO_UAM.match(identificador):
-        logging.warning(
-            "VALIDACION FALLIDA: correo fuera del dominio UAM o vacío",
-            extra={"ip": request.remote_addr, "event_type": "invalid_email_domain"}
+    # SEÑAL 5: identificador vacío o fuera del dominio UAM. No es un impacto
+    # medible del estudio, pero lo grabamos igual (sin descartarlo del todo).
+    identificador_valido = bool(identificador and PATRON_CORREO_UAM.match(identificador))
+    if not identificador_valido:
+        senales.append('email_invalido')
+
+    # Hash del identificador (para dedup y forense). Si no hay, cadena vacía.
+    identificador_hash = convertir_email_hash(identificador) if identificador else ""
+
+    # SEÑAL 6: velocidad de correos nuevos por IP (desactivada por defecto).
+    if identificador_hash and senal_velocidad_ip(ip, identificador_hash):
+        senales.append('ip')
+
+    sospechoso = bool(senales)
+
+    # Grabamos SIEMPRE en la cuarentena (limpio o sospechoso): fuente de
+    # verdad y base de la métrica "N envíos apartados" para la memoria.
+    registrar_evento_cuarentena(identificador_hash, centro, ubicacion, ip, sospechoso, senales)
+
+    # Solo contamos el impacto si el evento sale LIMPIO y el email es válido.
+    if not sospechoso and identificador_valido:
+        registrar_impacto_limpio(centro, ubicacion, identificador_hash)
+        plataforma = "Microsoft" if email else "Moodle"
+        logging.info(
+            "IMPACTO REGISTRADO",
+            extra={"plataforma": plataforma, "centro": centro, "ubicacion": ubicacion, "event_type": "phishing_impact"}
         )
-        return render_template('index.html', csrf_token=secrets.token_hex(16))
-    
-    identificador_hash = convertir_email_hash(identificador)
-    es_nuevo = registrar_victima(centro, ubicacion, identificador_hash)
-    if email:
-        logging.info("IMPACTO REGISTRADO", extra={"plataforma": "Microsoft", "centro": centro, "ubicacion": ubicacion, "event_type": "phishing_impact"})
-    elif username:
-        logging.info("IMPACTO REGISTRADO", extra={"plataforma": "Moodle", "centro": centro, "ubicacion": ubicacion, "event_type": "phishing_impact"})
-   
-    # Si el usuario utilizó el formulario de Moodle (Otros usuarios)
-    # directamente desde el index, no pasó por la ruta intermedia (fase 2).
-    # Al registrarla aquí, Redis (gracias a los Sets) la sumará si le faltaba,
-    # pero la ignorará y evitará duplicados si ya venía del flujo de Microsoft.
+    else:
+        logging.warning(
+            "EVENTO EN CUARENTENA",
+            extra={"senales": ",".join(senales), "centro": centro, "ubicacion": ubicacion, "ip": ip, "event_type": "cuarentena"}
+        )
+
+    # Embudo de EXPOSICIÓN (visitas): quien envía el formulario ha llegado a
+    # la fase de credenciales. El flujo Moodle "Otros usuarios" no pasa por
+    # la ruta intermedia (fase 2), así que la registramos aquí; los Sets
+    # evitan duplicados si ya venía del flujo Microsoft.
     detector_de_fases('2_email', centro)
-    detector_de_fases('3_password', centro)
-    
-    # Marcamos la sesión como comprometida antes de limpiar las variables
-    session['compromised'] = True
-            
+
+    # Limpiamos las variables sensibles de la sesión.
     session.pop('centro', None)
     session.pop('ubicacion', None)
     session.pop('email', None)
-    
-    return render_template('concienciacion.html') if es_nuevo else render_template('concienciacion_repetido.html')
+
+    # RESPUESTA ÚNICA para todos: mata el oráculo (antes concienciacion.html
+    # vs concienciacion_repetido.html le decía al atacante si había colado) y
+    # sigue educando también al usuario dudoso.
+    return render_template('concienciacion.html')
 
 # Ruta auxiliar para facilitar las pruebas durante el desarrollo
 #@phishing_bp.route('/reset')

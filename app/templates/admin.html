@@ -169,6 +169,12 @@
                 <span>QRs Suplantados</span>
                 <div class="kpi-number">{{ stats.get('UAM GENERAL', {}).get('Suplantadores (Sustitución QR)', 0) }}</div>
             </div>
+            {% if cuarentena %}
+            <div class="kpi-card" style="border-left-color: #ffa500;">
+                <span>Envíos Apartados</span>
+                <div class="kpi-number" style="color: #ffa500;">{{ cuarentena.sospechosos }}</div>
+            </div>
+            {% endif %}
         </div>
 
         {% if embudo %}
@@ -194,6 +200,34 @@
                     <div class="funnel-step-value">{{ embudo['3_password']['cantidad'] }} <span>{{ embudo['3_password']['porcentaje'] }}%</span></div>
                 </div>
             </div>
+        </div>
+        {% endif %}
+
+        {% if cuarentena and cuarentena.total_eventos > 0 %}
+        <div class="kpi-card" style="border-left-color: #ffa500; margin-bottom: 30px; padding: 15px 25px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <span style="color: var(--text-main); font-size: 0.8rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;">Integridad del Dato — Cuarentena</span>
+                <span class="status-pill" style="border-color: #ffa500; color: #ffa500;">
+                    {{ ((cuarentena.limpios / cuarentena.total_eventos) * 100) | round(1) }}% LIMPIO
+                </span>
+            </div>
+            <div style="display: flex; gap: 25px; flex-wrap: wrap; margin-bottom: 15px;">
+                <div><span style="color: var(--text-muted); font-size: 0.7rem; text-transform: uppercase;">Eventos totales</span><div style="font-size: 1.3rem; font-weight: 700;">{{ cuarentena.total_eventos }}</div></div>
+                <div><span style="color: var(--text-muted); font-size: 0.7rem; text-transform: uppercase;">Impactos limpios</span><div style="font-size: 1.3rem; font-weight: 700; color: var(--accent-cyan);">{{ cuarentena.limpios }}</div></div>
+                <div><span style="color: var(--text-muted); font-size: 0.7rem; text-transform: uppercase;">Apartados</span><div style="font-size: 1.3rem; font-weight: 700; color: #ffa500;">{{ cuarentena.sospechosos }}</div></div>
+            </div>
+            {% if cuarentena.senales %}
+            <div style="background: #0a0a0a; border-radius: 8px; padding: 15px;">
+                <div style="color: var(--text-muted); font-size: 0.65rem; text-transform: uppercase; margin-bottom: 12px; letter-spacing: 1px;">Desglose por señal de sospecha</div>
+                {% for senal, cuenta in cuarentena.senales.items() %}
+                <div class="funnel-step">
+                    <div class="funnel-step-label" style="width: 110px;">{{ senal }}</div>
+                    <div class="funnel-bar-bg"><div class="funnel-bar-fill" style="width: {{ ((cuenta / cuarentena.sospechosos) * 100) if cuarentena.sospechosos > 0 else 0 }}%; background: #ffa500; box-shadow: 0 0 5px rgba(255,165,0,0.5);"></div></div>
+                    <div class="funnel-step-value">{{ cuenta }}</div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
         </div>
         {% endif %}
 

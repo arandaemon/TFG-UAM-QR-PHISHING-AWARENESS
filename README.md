@@ -76,7 +76,8 @@ TFG-UAM-QR-PHISHING-AWARENESS/
 
 Dado su carácter institucional y su exposición en una red pública masiva, el desarrollo aplica de forma proactiva mitigaciones contra vulnerabilidades críticas (CWEs):
 
-1. **Cumplimiento RGPD (Privacy by Design):** Las credenciales de los usuarios nunca son almacenadas. El sistema hashea la identificación (email/usuario) en memoria usando `SHA-256` combinado con un *salt* criptográfico para mantener una lista de víctimas únicas sin comprometer datos personales.
+1. **Cumplimiento RGPD (Privacy by Design):** Las credenciales de los usuarios nunca son almacenadas. Los campos de contraseña de los formularios simulados se muestran por realismo pero **carecen de atributo `name`**, de modo que el navegador nunca transmite la contraseña al servidor. El sistema hashea únicamente la identificación (email/usuario) en memoria usando `SHA-256` combinado con un *salt* criptográfico para mantener una lista de víctimas únicas sin comprometer datos personales.
+10. **Integridad del Dato (Modelo de Cuarentena):** En lugar de rechazar en duro los envíos automatizados (lo que obliga a elegir entre proteger el dato o no perder usuarios reales), cada envío se **graba con sus señales** de sospecha (tiempo infrahumano, honeypot, token ausente/reutilizado, CSRF, velocidad de correos por IP) y **solo se contabiliza si sale limpio**. La deduplicación de impactos se hace por **hash de email** (no por sesión), de modo que N envíos del mismo correo cuentan como un único impacto sin importar cuántas sesiones se generen. Todos los envíos reciben la **misma respuesta** educativa, eliminando el oráculo que revelaría a un atacante si su envío ha colado. La estadística de cabecera es, por tanto, `COUNT(DISTINCT email_hash) WHERE NOT sospechoso`, y el panel expone además la métrica de "envíos apartados" para el análisis forense.
 2. **Protección Anti-DoS asimétrico (Bypass de NAT):** Utilizando `Flask-Limiter`, el límite de peticiones no se asocia a la IP de origen (ya que miles de alumnos comparten la IP pública de Eduroam, mitigando **CWE-290**), sino a un token de sesión anónimo.
 3. **Prevención CSRF (Cross-Site Request Forgery):** Inyección de tokens de un solo uso generados criptográficamente. Se utiliza `secrets.compare_digest()` para mitigar *Timing Attacks*.
 4. **Gestión Segura de Sesiones (CWE-312 y CWE-330):** Implementación de `Flask-Session` basado en Redis. No se envían datos críticos en cookies del cliente, y todas las cookies están firmadas y cifradas.
@@ -104,6 +105,16 @@ SECRET_SALT=tu_salt_criptografico_para_hashing
 ADMIN_USER=auditor
 ADMIN_PASS=password_segura
 ADMIN_PATH=dashboard-secreto
+
+# --- Ajuste del modelo de cuarentena (opcional; valores por defecto sensatos) ---
+# Tiempo mínimo (segundos) para considerar humano un envío. Como es una SEÑAL
+# y no un bloqueo, puede ser alto sin castigar a usuarios reales.
+UMBRAL_TIEMPO_HUMANO=2.5
+# Señal de velocidad de correos nuevos por IP (desactivada por defecto para no
+# penalizar el NAT de Eduroam hasta calibrarla con logs reales).
+IP_SIGNAL_ACTIVA=false
+IP_VENTANA_SEG=3600
+IP_UMBRAL_CORREOS=20
 ```
 
 ### 3. Ejecución del Entorno

@@ -1,23 +1,30 @@
 from PIL import Image, ImageDraw, ImageFont
 import os
 
-DISEÑOS = {
-    "Dumbo":  {"fondo": "cartel_dumbo.png",  "pos": (359, 724),  "size": 405},
-    "Menu":   {"fondo": "cartel_menu.png",   "pos": (538, 1407), "size": 336},
-    "Becas":  {"fondo": "cartel_becas.png",  "pos": (115, 200),  "size": 650},
-    "Wuolah": {"fondo": "cartel_wuolah.png", "pos": (1033, 1639), "size": 281},
-    "Mus":    {"fondo": "cartel_mus.png",    "pos": (860, 1510), "size": 348},
-    "Mesas":  {"fondo": "cartel_mesas.png",  "pos": (841, 2350), "size": 800}
+# Diseños A4 (van a global + cafeteria/biblioteca/pasillos, NO a las mesas)
+DISENOS_A4 = {
+    "Dumbo":  {"fondo": "cartel_dumbo.png",  "pos": (980, 1760),  "size": 700},
+    "Menu":   {"fondo": "cartel_menu.png",   "pos": (1210, 2760), "size": 650},
+    "Becas":  {"fondo": "cartel_becas.png",  "pos": (459, 500),   "size": 650},
+    "Wuolah": {"fondo": "cartel_wuolah.png", "pos": (2061, 3110), "size": 550},
+    "Mus":    {"fondo": "cartel_mus.png",    "pos": (1625, 3000), "size": 650},
 }
+
+# Diseño de mesa (va SOLO a los QR _mesa)
+DISENO_MESA = {"fondo": "cartel_mesas.png", "pos": (880, 2000), "size": 550}
 
 QR_FOLDER = "../qrs_campana"
 OUTPUT_FOLDER = "pdfs_finales_imprenta"
-
 os.makedirs(OUTPUT_FOLDER, exist_ok=True)
 
-nombres_qrs = [
+try:
+    FONT = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 35)
+except Exception:
+    FONT = ImageFont.load_default()
+
+# QR que reciben los 5 diseños A4
+qrs_a4 = [
     "global_renfe", "global_bus", "global_plaza",
-    "uam_banos", "uam_suplantadores",
     "ciencias_cafeteria", "ciencias_biblioteca", "ciencias_pasillos",
     "economicas_cafeteria", "economicas_biblioteca", "economicas_pasillos",
     "derecho_cafeteria", "derecho_biblioteca", "derecho_pasillos",
@@ -26,57 +33,55 @@ nombres_qrs = [
     "medicina_cafeteria", "medicina_biblioteca", "medicina_pasillos",
     "psicologia_cafeteria", "psicologia_biblioteca", "psicologia_pasillos",
     "eps_cafeteria", "eps_biblioteca", "eps_pasillos",
-    "doctorado_cafeteria", "doctorado_biblioteca", "doctorado_pasillos"
+    "doctorado_cafeteria", "doctorado_biblioteca", "doctorado_pasillos",
 ]
 
-print("Generando y separando carteles A4 y carteles de mesa A5...")
+# QR que reciben SOLO el diseño de mesa (uno por centro)
+qrs_mesa = [
+    "ciencias_mesa", "economicas_mesa", "derecho_mesa", "filosofia_mesa",
+    "educacion_mesa", "medicina_mesa", "psicologia_mesa", "eps_mesa",
+    "doctorado_mesa",
+]
 
-for nombre_qr in nombres_qrs:
-    if nombre_qr in ["uam_banos", "uam_suplantadores"]:
-        print(f"{nombre_qr}: Saltando (Pegatina de imprenta).")
-        continue 
-    
-    centro = nombre_qr.split('_')[0].upper()
+def cargar_qr(nombre_qr, size):
     qr_path = os.path.join(QR_FOLDER, f"qr_{nombre_qr}.png")
-    
     if not os.path.exists(qr_path):
-        print(f" No se encontró el QR base: {qr_path}")
-        continue
+        print(f" ⚠️  No se encontró el QR: {qr_path}")
+        return None
+    # LANCZOS al reducir mantiene la rejilla del QR uniforme (NEAREST la rompe)
+    return Image.open(qr_path).resize((size, size), Image.LANCZOS)
 
-    for nombre_diseno, params in DISEÑOS.items():
-        try:
-            cartel = Image.open(params["fondo"]).convert("RGB")
-            qr = Image.open(qr_path).resize((params["size"], params["size"]))
-            cartel.paste(qr, params["pos"])
-            
-            draw = ImageDraw.Draw(cartel)
-            etiqueta_limpia = nombre_qr.replace("_", " ").upper()
-            
-            try:
-                font = ImageFont.truetype("arial.ttf", 35)
-            except:
-                font = ImageFont.load_default()
+def componer(nombre_qr, nombre_diseno, params, carpeta_destino):
+    try:
+        cartel = Image.open(params["fondo"]).convert("RGB")
+        qr = cargar_qr(nombre_qr, params["size"])
+        if qr is None:
+            return
 
-            draw.text((50, 50), etiqueta_limpia, fill=(180, 180, 180), font=font)
-            
-            # --- SEPARACIÓN FORMATO A5 ---
-            if nombre_diseno == "Mesas":
-                # Todos los A5 van a la misma carpeta, sin subdividir por facultad
-                carpeta_destino = os.path.join(OUTPUT_FOLDER, "FORMATO_A5_MESAS")
-            else:
-                # Los A4 se siguen agrupando por facultad
-                carpeta_destino = os.path.join(OUTPUT_FOLDER, "FORMATO_A4_NORMAL", centro)
-                
-            # Creación segura del directorio 
-            os.makedirs(carpeta_destino, exist_ok=True)
-            
-            nombre_salida = os.path.basename(f"PDF_{nombre_qr}_con_{nombre_diseno}.pdf")
-            ruta_salida = os.path.join(carpeta_destino, nombre_salida)
-            
-            cartel.save(ruta_salida, "PDF", resolution=300.0)
-            print(f" ✅ Generado: {nombre_salida}")
-            
-        except Exception as e:
-            print(f" ❌ Error en la permutación {nombre_qr} + {nombre_diseno}: {e}")
+        cx, cy = params["pos"]
+        top_left = (cx - params["size"] // 2, cy - params["size"] // 2)
+        cartel.paste(qr, top_left)
 
-print(f"\n🚀 Todo organizado por tamaños en '{OUTPUT_FOLDER}'.")
+        os.makedirs(carpeta_destino, exist_ok=True)
+        nombre_salida = f"PDF_{nombre_qr}_con_{nombre_diseno}.pdf"
+        ruta_salida = os.path.join(carpeta_destino, nombre_salida)
+        cartel.save(ruta_salida, "PDF", resolution=300.0)
+        print(f" ✅ {nombre_salida}")
+    except Exception as e:
+        print(f" ❌ Error en {nombre_qr} + {nombre_diseno}: {e}")
+
+print("Generando carteles A4 (por facultad) y mesas A5...")
+
+# --- A4: cada QR recibe los 5 diseños ---
+for nombre_qr in qrs_a4:
+    centro = nombre_qr.split('_')[0].upper()
+    for nombre_diseno, params in DISENOS_A4.items():
+        destino = os.path.join(OUTPUT_FOLDER, "FORMATO_A4_NORMAL", centro)
+        componer(nombre_qr, nombre_diseno, params, destino)
+
+# --- Mesas: cada QR de mesa recibe solo el diseño Mesas ---
+for nombre_qr in qrs_mesa:
+    destino = os.path.join(OUTPUT_FOLDER, "FORMATO_A5_MESAS")
+    componer(nombre_qr, "Mesas", DISENO_MESA, destino)
+
+print(f"\n🚀 Todo organizado en '{OUTPUT_FOLDER}'.")

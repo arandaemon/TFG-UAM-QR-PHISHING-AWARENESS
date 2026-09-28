@@ -16,6 +16,20 @@ urls = {
     "global_plaza": "https://moodle.uarn.es/login/8242f0ee577002abce207a9b0fc08197777bd3653af10a5eb5b7964639906d4d",
 
     # ==========================================
+    # MESAS POR FACULTAD
+    # ==========================================
+    "ciencias_mesa": "https://moodle.uarn.es/login/e3b4d6ce977363d8611aa723208f1e05237f438810ae478f3142aac7afb012ef",
+    "economicas_mesa": "https://moodle.uarn.es/login/bb8c008a15d81b736e99c01cb5be7b69ee078dbd75520d268db4698a09ffd7ca",
+    "derecho_mesa": "https://moodle.uarn.es/login/de9410e7241283ac3830dffc40f70d68970a71248419324415f46944205f6a08",
+    "filosofia_mesa": "https://moodle.uarn.es/login/fcb739de336e04932a9b6751ff1ff06a8a8b5d6e2962bb5d9bc5930f62f2e604",
+    "educacion_mesa": "https://moodle.uarn.es/login/a9508dd18e10d2d2c1b549f7de87150d975cdccee9769a687b27a8fbdaf13bd2",
+    "medicina_mesa": "https://moodle.uarn.es/login/da112292985f7866a5386193e90faed82dabfeee3c73383e5aa24faa0062b019",
+    "psicologia_mesa": "https://moodle.uarn.es/login/3fbe36ba20a8257ef63ce831d7f4e5cbcfcab6517d7ebf3646918ef671dc541d",
+    "eps_mesa": "https://moodle.uarn.es/login/15f8b0c09e49855908f66833efbfdef0743c676770c6aa8297e34b559d327fd6",
+    "doctorado_mesa": "https://moodle.uarn.es/login/ba001a013152a42370642fadb1e0168cc6ed710f11140b81833bc5f5c703394f",
+
+
+    # ==========================================
     # PEGATINAS DE BAÑOS POR FACULTAD
     # ==========================================
     "ciencias_banos":     "https://moodle.uarn.es/login/a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4",

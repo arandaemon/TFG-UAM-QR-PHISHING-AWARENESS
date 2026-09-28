@@ -9,8 +9,21 @@ MAPEO_TRACKING = {
     "4a44dc15364204a80fe80e9039455cc1608281820fe2b24f1e5233ade6af1dd5": {"centro": "Campus UAM Exterior", "ubicacion": "Marquesinas de Autobús"},
     "8242f0ee577002abce207a9b0fc08197777bd3653af10a5eb5b7964639906d4d": {"centro": "Campus UAM Exterior", "ubicacion": "Plaza Mayor y Farolas peatonales"},
 
+    # ==========================================
+    # MESAS POR CENTRO
+    # ==========================================
+    "e3b4d6ce977363d8611aa723208f1e05237f438810ae478f3142aac7afb012ef": {"centro": "Facultad de Ciencias", "ubicacion": "Mesa"},
+    "bb8c008a15d81b736e99c01cb5be7b69ee078dbd75520d268db4698a09ffd7ca": {"centro": "Facultad de Económicas", "ubicacion": "Mesa"},
+    "de9410e7241283ac3830dffc40f70d68970a71248419324415f46944205f6a08": {"centro": "Facultad de Derecho", "ubicacion": "Mesa"},
+    "fcb739de336e04932a9b6751ff1ff06a8a8b5d6e2962bb5d9bc5930f62f2e604": {"centro": "Facultad de Filosofía y Letras", "ubicacion": "Mesa"},
+    "a9508dd18e10d2d2c1b549f7de87150d975cdccee9769a687b27a8fbdaf13bd2": {"centro": "Formación de Profesorado", "ubicacion": "Mesa"},
+    "da112292985f7866a5386193e90faed82dabfeee3c73383e5aa24faa0062b019": {"centro": "Facultad de Medicina", "ubicacion": "Mesa"},
+    "3fbe36ba20a8257ef63ce831d7f4e5cbcfcab6517d7ebf3646918ef671dc541d": {"centro": "Facultad de Psicología", "ubicacion": "Mesa"},
+    "15f8b0c09e49855908f66833efbfdef0743c676770c6aa8297e34b559d327fd6": {"centro": "Escuela Politécnica Superior", "ubicacion": "Mesa"},
+    "ba001a013152a42370642fadb1e0168cc6ed710f11140b81833bc5f5c703394f": {"centro": "Escuela de Doctorado", "ubicacion": "Mesa"},
 
-    # BAÑOS POR FACULTAD
+    # ==========================================
+    # BAÑOS POR CENTRO
     # ==========================================
     "a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4": {"centro": "Facultad de Ciencias",           "ubicacion": "Baños"},
     "c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6": {"centro": "Facultad de Económicas",         "ubicacion": "Baños"},
@@ -96,5 +109,5 @@ MAPEO_TRACKING = {
     # ==========================================
     "6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d": {"centro": "Escuela de Doctorado", "ubicacion": "Cafetería"},
     "7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e": {"centro": "Escuela de Doctorado", "ubicacion": "Biblioteca"},
-    "2c624232cdd221771294dfbb310aca000a0df6ac8b66b696d90ef06fdefb64a3": {"centro": "Escuela de Doctorado", "ubicacion": "Pasillos"}
+    "2c624232cdd221771294dfbb310aca000a0df6ac8b66b696d90ef06fdefb64a3": {"centro": "Escuela de Doctorado", "ubicacion": "Pasillos"},
 }

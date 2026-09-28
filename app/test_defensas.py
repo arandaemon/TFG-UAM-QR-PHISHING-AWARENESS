@@ -285,6 +285,23 @@ def escenarios():
     m = leer_metricas()
     check("Frase correcta SÍ borra los datos", m["impactos"] == 0, f"impactos={m['impactos']}")
 
+    # --- S16: señal IP fuerte (requiere IP_SIGNAL_ACTIVA=true; usa el umbral del .env) ---
+    titulo("S16 · Señal IP: varios correos distintos desde 1 IP → los que superan el umbral se apartan")
+    activa = os.environ.get("IP_SIGNAL_ACTIVA", "false").lower() == "true"
+    umbral = int(os.environ.get("IP_UMBRAL_CORREOS", "0") or 0)
+    if not (activa and umbral > 0):
+        print("  [SKIP] Señal IP desactivada o sin umbral (ejecuta DENTRO del contenedor con el .env cargado).")
+    else:
+        reset()
+        N = umbral + 3   # unos cuantos por encima del umbral
+        for i in range(N):
+            flujo(f"ipuser{i}@estudiante.uam.es", esperar=1.2)
+        m = leer_metricas()
+        check(f"Los primeros {umbral} correos cuentan (umbral IP={umbral})",
+              m["impactos"] == umbral, f"impactos={m['impactos']}")
+        check(f"Los {N - umbral} que superan el umbral van a cuarentena",
+              m["apartados"] == (N - umbral), f"apartados={m['apartados']}")
+
 # --------------------------------------------------------------------------
 def main():
     if "--si" not in sys.argv and os.environ.get("PRUEBAS_OK") != "1":

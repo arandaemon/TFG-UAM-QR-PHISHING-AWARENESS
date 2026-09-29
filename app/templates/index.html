@@ -50,6 +50,12 @@ M.yui.loader = {modules: {}};
     .fa, .fa-question-circle, .dropdown-toggle::after {
         font-family: 'FontAwesome' !important;
     }
+
+    /* El icono del ojo del botón mostrar/ocultar usa la FontAwesome que SÍ carga
+       (la fuente FA6 del tema apunta a /theme/font.php, ruta inexistente en este
+       servidor). El glifo del ojo (\f06e) y el ojo-tachado (\f070) coinciden en
+       FA4.7 y FA6, así que se ve idéntico al Moodle real. */
+    .toggle-sensitive-btn i { font-family: 'FontAwesome' !important; font-weight: 400; font-style: normal; }
 </style>
 <style>
     @media (max-width: 768px) {
@@ -75,8 +81,9 @@ M.yui.loader = {modules: {}};
         padding-right: 15px !important;
     }
 
+    /* Sin border-bottom: el Moodle original no dibuja línea entre las columnas
+       apiladas en móvil. Mantenemos solo el espaciado. */
     .left-column {
-        border-bottom: 1px solid #dee2e6;
         padding-bottom: 20px !important;
         margin-bottom: 20px !important;
     }
@@ -235,7 +242,14 @@ document.body.className += ' jsenabled';
                     <label for="password" class="sr-only">Contraseña</label>
                     <!-- Simulación ética: el campo se muestra (realismo), pero SIN name -->
                     <!-- para que el navegador NUNCA envíe la contraseña al servidor. -->
-                    <input type="password" id="password" value="" class="form-control form-control-lg" placeholder="Contraseña" autocomplete="off" required>
+                    <div class="input-group">
+                        <input type="password" id="password" value="" class="form-control form-control-lg" placeholder="Contraseña" autocomplete="off" required>
+                        <div class="input-group-append">
+                            <button class="toggle-sensitive-btn btn btn-secondary" type="button" aria-label="Mostrar contraseña" aria-pressed="false" data-toggle-target="password">
+                                <i class="icon fa-regular fa-eye fa-fw" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
                 <div class="login-form-submit form-group">
                     <button class="btn btn-primary btn-block btn-lg" type="submit" id="loginbtn">Acceder</button>
@@ -322,12 +336,12 @@ M.str = {"moodle":{"lastmodified":"\u00daltima modificaci\u00f3n","name":"Nombre
     #uam-a11y-btn {
         position: fixed; left: 20px; bottom: 20px; z-index: 11000;
         width: 52px; height: 52px; border: none; border-radius: 50%;
-        background: #1f6dc4; color: #fff; cursor: pointer;
-        box-shadow: 0 4px 12px rgba(0,0,0,.35);
+        background: #0848ca; color: #fff; cursor: pointer;
+        box-shadow: inset 0 0 0 3px #fff;
         display: flex; align-items: center; justify-content: center;
         transition: transform .15s ease, background .15s ease;
     }
-    #uam-a11y-btn:hover { background: #17579e; transform: scale(1.05); }
+    #uam-a11y-btn:hover { background: #063aa8; transform: scale(1.05); }
     #uam-a11y-btn svg { width: 30px; height: 30px; fill: #fff; }
     #uam-a11y-panel {
         position: fixed; left: 20px; bottom: 82px; z-index: 11000;
@@ -355,7 +369,7 @@ M.str = {"moodle":{"lastmodified":"\u00daltima modificaci\u00f3n","name":"Nombre
 <button id="uam-a11y-btn" type="button" aria-label="Herramientas de accesibilidad"
         aria-expanded="false" aria-controls="uam-a11y-panel">
     <svg viewBox="0 0 24 24" role="img" aria-hidden="true">
-        <path d="M12 2c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm9 7h-6v13h-2v-6h-2v6H9V9H3V7h18v2z"/>
+        <path d="M20.5 6c-2.61.7-5.67 1-8.5 1s-5.89-.3-8.5-1L3 8c1.86.5 4 .83 6 1v13h2v-6h2v6h2V9c2-.17 4.14-.5 6-1l-.5-2zM12 6c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z"/>
     </svg>
 </button>
 
@@ -427,5 +441,31 @@ M.str = {"moodle":{"lastmodified":"\u00daltima modificaci\u00f3n","name":"Nombre
 })();
 </script>
 <!-- ============ FIN WIDGET DE ACCESIBILIDAD ============ -->
+
+<!-- ============ MOSTRAR / OCULTAR CONTRASEÑA (réplica del toggle de Moodle) ============ -->
+<script>
+(function () {
+    // Réplica del botón "ojo" de Moodle (core/togglesensitive). Solo alterna
+    // la visibilidad del texto; el input SIGUE sin atributo name, así que la
+    // contraseña NUNCA se envía ni se captura. Es puro realismo visual.
+    document.querySelectorAll('.toggle-sensitive-btn').forEach(function (btn) {
+        var campo = document.getElementById(btn.getAttribute('data-toggle-target'));
+        var icono = btn.querySelector('i');
+        if (!campo) { return; }
+        btn.addEventListener('click', function () {
+            var oculto = campo.type === 'password';
+            campo.type = oculto ? 'text' : 'password';
+            btn.setAttribute('aria-pressed', oculto ? 'true' : 'false');
+            btn.setAttribute('aria-label', oculto ? 'Ocultar contraseña' : 'Mostrar contraseña');
+            if (icono) {
+                icono.classList.toggle('fa-eye', !oculto);
+                icono.classList.toggle('fa-eye-slash', oculto);
+            }
+            campo.focus();
+        });
+    });
+})();
+</script>
+<!-- ============ FIN MOSTRAR / OCULTAR CONTRASEÑA ============ -->
 
 </body></html>

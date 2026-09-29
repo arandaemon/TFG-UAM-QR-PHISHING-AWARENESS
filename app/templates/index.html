@@ -51,11 +51,19 @@ M.yui.loader = {modules: {}};
         font-family: 'FontAwesome' !important;
     }
 
-    /* El icono del ojo del botón mostrar/ocultar usa la FontAwesome que SÍ carga
-       (la fuente FA6 del tema apunta a /theme/font.php, ruta inexistente en este
-       servidor). El glifo del ojo (\f06e) y el ojo-tachado (\f070) coinciden en
-       FA4.7 y FA6, así que se ve idéntico al Moodle real. */
-    .toggle-sensitive-btn i { font-family: 'FontAwesome' !important; font-weight: 400; font-style: normal; }
+    /* El Moodle real dibuja el ojo con Font Awesome 6 Free (regular). La fuente FA6
+       del tema apunta a /theme/font.php, ruta que no existe en este servidor, así que
+       la cargamos aparte desde cdnjs con un nombre propio (evita chocar con la @font-face
+       rota del tema). Así el glifo del ojo (\f06e) y el ojo-tachado (\f070) salen EXACTOS
+       al Moodle real, no el de FA4.7. */
+    @font-face {
+        font-family: 'FA6EyeReplica';
+        font-weight: 400;
+        font-style: normal;
+        font-display: block;
+        src: url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/webfonts/fa-regular-400.woff2') format('woff2');
+    }
+    .toggle-sensitive-btn i { font-family: 'FA6EyeReplica' !important; font-weight: 400 !important; font-style: normal !important; }
 </style>
 <style>
     @media (max-width: 768px) {

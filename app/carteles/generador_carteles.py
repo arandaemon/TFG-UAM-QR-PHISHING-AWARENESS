@@ -8,6 +8,9 @@ DISENOS_A4 = {
     "Becas":  {"fondo": "cartel_becas.png",  "pos": (459, 500),   "size": 650},
     "Wuolah": {"fondo": "cartel_wuolah.png", "pos": (2061, 3110), "size": 550},
     "Mus":    {"fondo": "cartel_mus.png",    "pos": (1625, 3000), "size": 650},
+    "Martes": {"fondo": "cartel_tonto.png", "pos": (1230, 2860), "size": 650},
+    "Alumnos": {"fondo": "cartel_alumnos.png", "pos": (1250, 2870), "size": 650},
+    "Encuesta": {"fondo": "cartel_encuesta.png", "pos": (2002, 900), "size": 650},
 }
 
 # Diseño de mesa (va SOLO a los QR _mesa)
@@ -25,15 +28,15 @@ except Exception:
 # QR que reciben los 5 diseños A4
 qrs_a4 = [
     "global_renfe", "global_bus", "global_plaza",
-    "ciencias_cafeteria", "ciencias_biblioteca", "ciencias_pasillos",
-    "economicas_cafeteria", "economicas_biblioteca", "economicas_pasillos",
-    "derecho_cafeteria", "derecho_biblioteca", "derecho_pasillos",
-    "filosofia_cafeteria", "filosofia_biblioteca", "filosofia_pasillos",
-    "educacion_cafeteria", "educacion_biblioteca", "educacion_pasillos",
-    "medicina_cafeteria", "medicina_biblioteca", "medicina_pasillos",
-    "psicologia_cafeteria", "psicologia_biblioteca", "psicologia_pasillos",
-    "eps_cafeteria", "eps_biblioteca", "eps_pasillos",
-    "doctorado_cafeteria", "doctorado_biblioteca", "doctorado_pasillos",
+    "ciencias_cafeteria", "ciencias_biblioteca", "ciencias_pasillos", "ciencias_hall",
+    "economicas_cafeteria", "economicas_biblioteca", "economicas_pasillos", "economicas_hall",
+    "derecho_cafeteria", "derecho_biblioteca", "derecho_pasillos", "derecho_hall",
+    "filosofia_cafeteria", "filosofia_biblioteca", "filosofia_pasillos", "filosofia_hall",
+    "educacion_cafeteria", "educacion_biblioteca", "educacion_pasillos", "educacion_hall",
+    "medicina_cafeteria", "medicina_biblioteca", "medicina_pasillos", "medicina_hall",
+    "psicologia_cafeteria", "psicologia_biblioteca", "psicologia_pasillos", "psicologia_hall",
+    "eps_cafeteria", "eps_biblioteca", "eps_pasillos", "eps_hall",
+    "doctorado_cafeteria", "doctorado_biblioteca", "doctorado_pasillos", "doctorado_hall",
 ]
 
 # QR que reciben SOLO el diseño de mesa (uno por centro)

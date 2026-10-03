@@ -23,6 +23,19 @@ MAPEO_TRACKING = {
     "ba001a013152a42370642fadb1e0168cc6ed710f11140b81833bc5f5c703394f": {"centro": "Escuela de Doctorado", "ubicacion": "Mesa"},
 
     # ==========================================
+    # HALL PRINCIPAL POR FACULTAD
+    # ==========================================
+    "e204b6ff1c8b752b3b99b9d545ffd38a85afb1904aebb4186c741c780e62521c": {"centro": "Facultad de Ciencias", "ubicacion": "Hall principal"},
+    "3e2ac39474abc5f1560f8c76a6c712dc2a3e2071d793f8e01f26e3c58159cf7a": {"centro": "Facultad de Económicas", "ubicacion": "Hall principal"},
+    "7ed900fa5603c6b89f0143d9ada29fbf29607bd8f16d2531e28f56eb19615c31": {"centro": "Facultad de Derecho", "ubicacion": "Hall principal"},
+    "8c2a4e1d9baf6940c70b9adab8fea647001760e2348d04f6854e68489e73da95": {"centro": "Facultad de Filosofía y Letras", "ubicacion": "Hall principal"},
+    "2c44e7901820930aa92e925cd735358ca188d6c6205b1ed4cbce7c0881adefba": {"centro": "Formación de Profesorado", "ubicacion": "Hall principal"},
+    "0d6cba31bbb4ef60c5137a1b0b84f7ffb8face9ccc9c55be3177b0f33d1f6b07": {"centro": "Facultad de Medicina", "ubicacion": "Hall principal"},
+    "9877b73baef71e39561425604185a2256f62f215dda35cbd009a0806059e1fd2": {"centro": "Facultad de Psicología", "ubicacion": "Hall principal"},
+    "7fc99ba0829b73ac1d893b82a028a2034a1aa605ab43bbbe02674f131a39ccbb": {"centro": "Escuela Politécnica Superior", "ubicacion": "Hall principal"},
+    "6605fee26d6130007b1d62765868fc135aeb54d236146f5577584334e91d22c1": {"centro": "Escuela de Doctorado", "ubicacion": "Hall principal"},
+
+    # ==========================================
     # BAÑOS POR CENTRO
     # ==========================================
     "a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4": {"centro": "Facultad de Ciencias",           "ubicacion": "Baños"},

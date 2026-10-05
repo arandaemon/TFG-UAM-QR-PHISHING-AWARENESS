@@ -13,7 +13,8 @@ DPI = 300
 def mm2px(mm): return round(mm / 25.4 * DPI)
 
 A4_W, A4_H = mm2px(210), mm2px(297)
-COLS_CX  = [mm2px(60), mm2px(164)]                                  # centro X de columnas
+DESPLAZO_X = 5   # mm a mover a la IZQUIERDA (sube el número si hace falta más)
+COLS_CX  = [mm2px(60 - DESPLAZO_X), mm2px(164 - DESPLAZO_X)] # centro X de columnas
 FILAS_CY = [mm2px(36.6), mm2px(111.7), mm2px(184.9), mm2px(258.4)] # centro Y de filas
 ANCHO_MAX = mm2px(103)   # la pegatina apaisada se escala a este ancho
 

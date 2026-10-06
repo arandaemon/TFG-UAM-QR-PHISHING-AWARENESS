@@ -26,7 +26,6 @@ urls = {
     "medicina_mesa": "https://moodle.uarn.es/login/da112292985f7866a5386193e90faed82dabfeee3c73383e5aa24faa0062b019",
     "psicologia_mesa": "https://moodle.uarn.es/login/3fbe36ba20a8257ef63ce831d7f4e5cbcfcab6517d7ebf3646918ef671dc541d",
     "eps_mesa": "https://moodle.uarn.es/login/15f8b0c09e49855908f66833efbfdef0743c676770c6aa8297e34b559d327fd6",
-    "doctorado_mesa": "https://moodle.uarn.es/login/ba001a013152a42370642fadb1e0168cc6ed710f11140b81833bc5f5c703394f",
 
 
     # ==========================================
@@ -40,20 +39,18 @@ urls = {
     "medicina_banos":     "https://moodle.uarn.es/login/e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4",
     "psicologia_banos":   "https://moodle.uarn.es/login/a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6",
     "eps_banos":          "https://moodle.uarn.es/login/c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8",
-    "doctorado_banos":    "https://moodle.uarn.es/login/e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0",
     
     # ==========================================
     # HALL PRINCIPAL POR FACULTAD
     # ==========================================
     "ciencias_hall": "https://moodle.uarn.es/login/e204b6ff1c8b752b3b99b9d545ffd38a85afb1904aebb4186c741c780e62521c",
     "economicas_hall": "https://moodle.uarn.es/login/3e2ac39474abc5f1560f8c76a6c712dc2a3e2071d793f8e01f26e3c58159cf7a",
-    "derecho_hall": "https://moodle.uarn.es/login/7ed900fa5603c6b89f0143d9ada29fbf29607bd8f16d2531e28f56eb19615c31",
     "filosofia_hall": "https://moodle.uarn.es/login/8c2a4e1d9baf6940c70b9adab8fea647001760e2348d04f6854e68489e73da95",
     "educacion_hall": "https://moodle.uarn.es/login/2c44e7901820930aa92e925cd735358ca188d6c6205b1ed4cbce7c0881adefba",
     "medicina_hall": "https://moodle.uarn.es/login/0d6cba31bbb4ef60c5137a1b0b84f7ffb8face9ccc9c55be3177b0f33d1f6b07",
     "psicologia_hall": "https://moodle.uarn.es/login/9877b73baef71e39561425604185a2256f62f215dda35cbd009a0806059e1fd2",
     "eps_hall": "https://moodle.uarn.es/login/7fc99ba0829b73ac1d893b82a028a2034a1aa605ab43bbbe02674f131a39ccbb",
-    "doctorado_hall": "https://moodle.uarn.es/login/6605fee26d6130007b1d62765868fc135aeb54d236146f5577584334e91d22c1",
+    "derecho_hall": "https://moodle.uarn.es/login/7ed900fa5603c6b89f0143d9ada29fbf29607bd8f16d2531e28f56eb19615c31",
 
     # ==========================================
     # PEGATINAS SUPLANTADORAS POR FACULTAD
@@ -66,7 +63,6 @@ urls = {
     "medicina_suplantadores":   "https://moodle.uarn.es/login/f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5",
     "psicologia_suplantadores": "https://moodle.uarn.es/login/b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7",
     "eps_suplantadores":        "https://moodle.uarn.es/login/d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9",
-    "doctorado_suplantadores":  "https://moodle.uarn.es/login/f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1",
 
     # ==========================================
     # CIENCIAS
@@ -124,12 +120,6 @@ urls = {
     "eps_biblioteca": "https://moodle.uarn.es/login/4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b",
     "eps_pasillos": "https://moodle.uarn.es/login/7902699be42c8a8e46fbbb4501726517e86b22c56a189f7625a6da49081b2451",
 
-    # ==========================================
-    # ESCUELA DE DOCTORADO
-    # ==========================================
-    "doctorado_cafeteria": "https://moodle.uarn.es/login/6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d",
-    "doctorado_biblioteca": "https://moodle.uarn.es/login/7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e",
-    "doctorado_pasillos": "https://moodle.uarn.es/login/2c624232cdd221771294dfbb310aca000a0df6ac8b66b696d90ef06fdefb64a3"
 }
 
 print("Generando códigos QR para la campaña...")

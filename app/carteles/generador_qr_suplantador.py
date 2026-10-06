@@ -15,7 +15,6 @@ FACULTADES_SUPLANTADORES = [
     ("medicina",   "Facultad de Medicina"),
     ("psicologia", "Facultad de Psicología"),
     ("eps",        "Escuela Politécnica Superior"),
-    ("doctorado",  "Escuela de Doctorado"),
 ]
 
 def generar_suplantador(qr_path, output_path, nombre_facultad):

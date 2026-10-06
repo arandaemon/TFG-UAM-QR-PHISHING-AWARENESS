@@ -17,7 +17,6 @@ FACULTADES_BANOS = [
     ("medicina",   "Facultad de Medicina"),
     ("psicologia", "Facultad de Psicología"),
     ("eps",        "Escuela Politécnica Superior"),
-    ("doctorado",  "Escuela de Doctorado"),
 ]
 
 def generar_pegatina_banos(base_path, qr_path, output_path, nombre_facultad):

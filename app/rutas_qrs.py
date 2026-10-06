@@ -20,7 +20,6 @@ MAPEO_TRACKING = {
     "da112292985f7866a5386193e90faed82dabfeee3c73383e5aa24faa0062b019": {"centro": "Facultad de Medicina", "ubicacion": "Mesa"},
     "3fbe36ba20a8257ef63ce831d7f4e5cbcfcab6517d7ebf3646918ef671dc541d": {"centro": "Facultad de Psicología", "ubicacion": "Mesa"},
     "15f8b0c09e49855908f66833efbfdef0743c676770c6aa8297e34b559d327fd6": {"centro": "Escuela Politécnica Superior", "ubicacion": "Mesa"},
-    "ba001a013152a42370642fadb1e0168cc6ed710f11140b81833bc5f5c703394f": {"centro": "Escuela de Doctorado", "ubicacion": "Mesa"},
 
     # ==========================================
     # HALL PRINCIPAL POR FACULTAD
@@ -33,7 +32,6 @@ MAPEO_TRACKING = {
     "0d6cba31bbb4ef60c5137a1b0b84f7ffb8face9ccc9c55be3177b0f33d1f6b07": {"centro": "Facultad de Medicina", "ubicacion": "Hall principal"},
     "9877b73baef71e39561425604185a2256f62f215dda35cbd009a0806059e1fd2": {"centro": "Facultad de Psicología", "ubicacion": "Hall principal"},
     "7fc99ba0829b73ac1d893b82a028a2034a1aa605ab43bbbe02674f131a39ccbb": {"centro": "Escuela Politécnica Superior", "ubicacion": "Hall principal"},
-    "6605fee26d6130007b1d62765868fc135aeb54d236146f5577584334e91d22c1": {"centro": "Escuela de Doctorado", "ubicacion": "Hall principal"},
 
     # ==========================================
     # BAÑOS POR CENTRO
@@ -46,7 +44,6 @@ MAPEO_TRACKING = {
     "e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4": {"centro": "Facultad de Medicina",           "ubicacion": "Baños"},
     "a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6": {"centro": "Facultad de Psicología",         "ubicacion": "Baños"},
     "c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8": {"centro": "Escuela Politécnica Superior",   "ubicacion": "Baños"},
-    "e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0": {"centro": "Escuela de Doctorado",           "ubicacion": "Baños"},
 
     # ==========================================
     # SUPLANTADORES POR FACULTAD
@@ -59,7 +56,6 @@ MAPEO_TRACKING = {
     "f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5": {"centro": "Facultad de Medicina",           "ubicacion": "Suplantadores (Sustitución QR)"},
     "b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7": {"centro": "Facultad de Psicología",         "ubicacion": "Suplantadores (Sustitución QR)"},
     "d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9": {"centro": "Escuela Politécnica Superior",   "ubicacion": "Suplantadores (Sustitución QR)"},
-    "f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1": {"centro": "Escuela de Doctorado",           "ubicacion": "Suplantadores (Sustitución QR)"},
 
     # ==========================================
     # Centro de Ciencias
@@ -117,10 +113,4 @@ MAPEO_TRACKING = {
     "4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b": {"centro": "Escuela Politécnica Superior", "ubicacion": "Biblioteca"},
     "7902699be42c8a8e46fbbb4501726517e86b22c56a189f7625a6da49081b2451": {"centro": "Escuela Politécnica Superior", "ubicacion": "Pasillos"},
 
-    # ==========================================
-    # Escuela de Doctorado
-    # ==========================================
-    "6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d": {"centro": "Escuela de Doctorado", "ubicacion": "Cafetería"},
-    "7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e": {"centro": "Escuela de Doctorado", "ubicacion": "Biblioteca"},
-    "2c624232cdd221771294dfbb310aca000a0df6ac8b66b696d90ef06fdefb64a3": {"centro": "Escuela de Doctorado", "ubicacion": "Pasillos"},
 }

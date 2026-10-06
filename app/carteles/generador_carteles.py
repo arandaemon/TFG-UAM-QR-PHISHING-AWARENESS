@@ -10,7 +10,6 @@ DISENOS_A4 = {
     "Mus":    {"fondo": "cartel_mus.png",    "pos": (1625, 3000), "size": 650},
     "Martes": {"fondo": "cartel_tonto.png", "pos": (1230, 2860), "size": 650},
     "Alumnos": {"fondo": "cartel_alumnos.png", "pos": (1250, 2870), "size": 650},
-    "Encuesta": {"fondo": "cartel_encuesta.png", "pos": (2002, 900), "size": 650},
 }
 
 # Diseño de mesa (va SOLO a los QR _mesa)
@@ -36,14 +35,12 @@ qrs_a4 = [
     "medicina_cafeteria", "medicina_biblioteca", "medicina_pasillos", "medicina_hall",
     "psicologia_cafeteria", "psicologia_biblioteca", "psicologia_pasillos", "psicologia_hall",
     "eps_cafeteria", "eps_biblioteca", "eps_pasillos", "eps_hall",
-    "doctorado_cafeteria", "doctorado_biblioteca", "doctorado_pasillos", "doctorado_hall",
 ]
 
 # QR que reciben SOLO el diseño de mesa (uno por centro)
 qrs_mesa = [
     "ciencias_mesa", "economicas_mesa", "derecho_mesa", "filosofia_mesa",
     "educacion_mesa", "medicina_mesa", "psicologia_mesa", "eps_mesa",
-    "doctorado_mesa",
 ]
 
 def cargar_qr(nombre_qr, size):

@@ -61,7 +61,7 @@ if __name__ == "__main__":
         print(f"❌ Falta la imagen base '{imagen_base_path}'")
     else:
         for slug, nombre in FACULTADES_BANOS:
-            qr_path     = f"../qrs_campana/qr_{slug}_banos.png"
+            qr_path     = f"qrs_campana/qr_{slug}_banos.png"
             output_path = os.path.join(output_folder, f"pegatina_banos_{slug}.png")
             generar_pegatina_banos(imagen_base_path, qr_path, output_path, nombre)
 

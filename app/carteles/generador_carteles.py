@@ -10,12 +10,15 @@ DISENOS_A4 = {
     "Mus":    {"fondo": "cartel_mus.png",    "pos": (1625, 3000), "size": 650},
     "Martes": {"fondo": "cartel_tonto.png", "pos": (1230, 2860), "size": 650},
     "Alumnos": {"fondo": "cartel_alumnos.png", "pos": (1250, 2870), "size": 650},
+    "IA":       {"fondo": "cartel_IA.png",       "pos": (1884, 2174), "size": 800},
+    "Apuntes":  {"fondo": "cartel_apuntes.png",  "pos": (1260, 3027), "size": 550},
+    "Gestion":  {"fondo": "cartel_sigma.png",    "pos": (610, 2430),  "size": 750},
 }
 
 # Diseño de mesa (va SOLO a los QR _mesa)
 DISENO_MESA = {"fondo": "cartel_mesas.png", "pos": (880, 2000), "size": 550}
 
-QR_FOLDER = "../qrs_campana"
+QR_FOLDER = "qrs_campana"
 OUTPUT_FOLDER = "pdfs_finales_imprenta"
 os.makedirs(OUTPUT_FOLDER, exist_ok=True)
 

@@ -53,7 +53,7 @@ if __name__ == "__main__":
     print("🚀 Generando pegatinas con margen microscópico (0.75 mm)...")
 
     for slug, nombre in FACULTADES_SUPLANTADORES:
-        qr_path     = f"../qrs_campana/qr_{slug}_suplantadores.png"
+        qr_path     = f"qrs_campana/qr_{slug}_suplantadores.png"
         output_path = os.path.join(output_folder, f"pegatina_suplantador_{slug}.png")
         generar_suplantador(qr_path, output_path, nombre)
 

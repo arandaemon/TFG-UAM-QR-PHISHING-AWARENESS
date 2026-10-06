@@ -126,10 +126,10 @@ print("Generando códigos QR para la campaña...")
 
 for nombre, url in urls.items():
     qr = qrcode.QRCode(
-        version=1,
-        error_correction=qrcode.constants.ERROR_CORRECT_H, # Alta corrección de errores (por si el papel se arruga o pinta un poco)
-        box_size=20, # Tamaño grande para asegurar nitidez en la impresión
-        border=2,    # Borde pequeño para que encaje mejor en los carteles
+        version=None, # Dejamos que la librería escale dinámicamente si el payload lo requiere
+        error_correction=qrcode.constants.ERROR_CORRECT_L, # Nivel L: 7% de corrección, genera matrices mucho menos densas
+        box_size=20,  # Mantienes buena resolución
+        border=2,     # Borde ajustado para encajar en el cartel
     )
     qr.add_data(url)
     qr.make(fit=True)

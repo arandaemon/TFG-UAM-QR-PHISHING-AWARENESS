@@ -18,7 +18,8 @@ La campaña consistió en el despliegue físico de códigos QR maliciosos superp
 3. Estructura del Proyecto
 4. Análisis de Ciberseguridad
 5. Despliegue y Configuración
-6. Aviso Legal
+6. Generación de Cartelería (Física)
+7. Aviso Legal
 
 ---
 
@@ -89,7 +90,7 @@ Dado su carácter institucional y su exposición en una red pública masiva, el 
 
 ---
 
-##  Guía de Despliegue
+## 🚀 Guía de Despliegue
 
 ### 1. Requisitos Previos
 * Servidor Linux (VM local o VPS) con IP accesible (Ej. VirtualBox en Adaptador Puente).
@@ -128,6 +129,20 @@ chmod +x start.sh
 ### 4. Uso y Acceso
 * **Simulación de Escaneo (Víctima):** Accede a `http://<IP_SERVIDOR>/login/<uuid>` (Sustituye `<uuid>` por un hash válido de `app/rutas.py`).
 * **Panel de Auditoría (Admin):** Accede a `http://<IP_SERVIDOR>/<ADMIN_PATH>` (Definido en el `.env`) y utiliza las credenciales Basic Auth.
+
+---
+
+## 🖨️ Generación de Cartelería (Física)
+
+Para evitar inflar el repositorio con archivos binarios pesados (imágenes de alta resolución y PDFs listos para imprenta), los carteles generados **no están subidos al control de versiones**. 
+
+En su lugar, el repositorio incluye los scripts base y los recursos (`app/carteles/`) necesarios para forjar el material al vuelo. Para recrear toda la campaña física (carteles A4, mesas A5 y plantillas de pegatinas), simplemente ejecuta:
+
+```bash
+cd app/carteles
+python3 generar_todo.py
+```
+Este orquestador invocará los sub-scripts necesarios, fusionará los QRs con los diseños base y generará las carpetas de salida (`pdfs_finales_imprenta/`) con los documentos listos para su impresión, debidamente organizados por facultad.
 
 ---
 

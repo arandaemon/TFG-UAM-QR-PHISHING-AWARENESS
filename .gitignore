@@ -25,3 +25,9 @@ nginx/logs/
 
 # Cookies de pruebas (curl/libcurl) — no deben versionarse
 cookies.txt
+
+*.pdf
+*.zip
+app/carteles/paquete_imprenta_total/
+app/carteles/pdfs_finales_imprenta/
+app/carteles/qrs_campana/

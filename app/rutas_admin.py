@@ -237,13 +237,27 @@ def admin_cerrar_sesion():
 @admin_bp.route(f"/{os.environ.get('ADMIN_PATH', 'admin-default')}/reset-db", methods=['POST'])
 @requiere_auth
 def admin_reset_db():
-    # Confirmación tipo GitHub hay que escribir la frase exacta para borrar.
-    # Validación en SERVIDOR un POST sin la frase correcta NO borra nada
-    # (protege aunque alguien salte el JavaScript del navegador).
+    # Doble barrera para el borrado:
+    #  1) la frase exacta (confirmación tipo GitHub)
+    #  2) una contraseña de borrado que SOLO conoce el dueño del TFG,
+    #     distinta del ADMIN_PASS (que conoce el equipo de ciber).
     FRASE_BORRADO = "BORRAR DATOS DEL TFG"
     confirmacion = request.form.get('confirmacion', '').strip()
+    pass_borrado_recibida = request.form.get('pass_borrado', '')
+    pass_borrado_env = os.environ.get("BORRADO_PASS", "")
+
+    # Si no hay BORRADO_PASS configurada, por seguridad NO se permite borrar.
+    if not pass_borrado_env:
+        return redirect(url_for('admin.admin_stats'))
+
+    # 1) Frase exacta
     if confirmacion.upper() != FRASE_BORRADO.upper():
         return redirect(url_for('admin.admin_stats'))
-    # ¡ATENCIÓN! Esto borra la base de datos de Redis entera.
+
+    # 2) Contraseña de borrado (comparación segura contra timing)
+    if not pass_borrado_recibida or not secrets.compare_digest(pass_borrado_recibida, pass_borrado_env):
+        return redirect(url_for('admin.admin_stats'))
+
+    # Pasadas las dos barreras: borra la base de datos entera.
     conexion_redis.flushdb()
     return redirect(url_for('admin.admin_stats'))

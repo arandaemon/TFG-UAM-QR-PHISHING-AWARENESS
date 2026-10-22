@@ -72,6 +72,8 @@ TFG-UAM-QR-PHISHING-AWARENESS/
 ├── nginx/
 │   └── conf.d/
 │       └── default.conf      # Enrutamiento inverso, redirecciones 301, y parcheo de seguridad OpSec
+├── scripts/
+│   └── backup_redis.sh       # Copia automática del volumen de Redis (RDB+AOF) por cron, con rotación
 ├── docker-compose.yml        # Orquestador de la infraestructura y red interna (bridge)
 ├── LICENSE.md                # Licencia MIT
 ├── README.md                 # Documentación del proyecto
@@ -103,6 +105,10 @@ Dado su carácter institucional y su exposición en una red pública masiva, el 
 
 10. **Cabeceras de Seguridad y ProxyFix:** Se inyectan respuestas HTTP robustas (`Strict-Transport-Security`, `X-Frame-Options` SAMEORIGIN y `nosniff`), y se sanea la lectura de IPs de *X-Forwarded-For* limitando la confianza a Nginx utilizando el middleware `ProxyFix`.
 
+11. **Defensa en Profundidad a Nivel de Red:** Complementando el limitador de aplicación, Nginx aplica limitación de peticiones por zona (`limit_req`, con tasas distintas para la landing del QR, el envío de formularios y los recursos estáticos), y **fail2ban** vigila los logs con *jails* para SSH y para el *rate-limit* de Nginx, baneando temporalmente las IPs que superan el umbral (con un *bantime* corto para no penalizar el NAT de Eduroam ante falsos positivos).
+
+12. **Doble Barrera para el Borrado de Datos:** El borrado de la base de datos desde el panel exige, además de la confirmación textual exacta (tipo GitHub), una contraseña de borrado independiente (`BORRADO_PASS`) que no coincide con la de administración. Si dicha variable no está definida, el borrado queda bloqueado por defecto (*fail-safe*), evitando la pérdida accidental o malintencionada de los datos de la campaña.
+
 ## 🚀 Guía de Despliegue
 
 ### 1. Requisitos Previos
@@ -122,6 +128,7 @@ SECRET_SALT=tu_salt_criptografico_para_hashing
 ADMIN_USER=auditor
 ADMIN_PASS=password_segura
 ADMIN_PATH=dashboard-secreto
+BORRADO_PASS=contraseña_distinta_solo_del_responsable   # 2ª barrera para borrar la BD; sin ella el borrado queda bloqueado
 
 # --- Ajuste del modelo de cuarentena (opcional; valores por defecto sensatos) ---
 # Tiempo mínimo (segundos) para considerar humano un envío. Como es una SEÑAL
@@ -147,9 +154,19 @@ chmod +x start.sh
 
 ### 4. Uso y Acceso
 
-* **Simulación de Escaneo (Víctima):** Accede a `http://<IP_SERVIDOR>/login/<uuid>` (Sustituye `<uuid>` por un hash válido de `app/rutas.py`).
+* **Simulación de Escaneo (Víctima):** Accede a `http://<IP_SERVIDOR>/login/<uuid>` (Sustituye `<uuid>` por un hash válido de `app/rutas_qrs.py`).
 
 * **Panel de Auditoría (Admin):** Accede a `http://<IP_SERVIDOR>/<ADMIN_PATH>` (Definido en el `.env`) y utiliza las credenciales Basic Auth.
+
+### 5. Copias de Seguridad y Recuperación
+
+Los datos de la campaña (impactos, embudos, cuarentena) residen en Redis con persistencia AOF sobre un volumen del host (`redis_data/`). Para garantizar su disponibilidad frente a borrados accidentales, corrupción o fallos, el script `scripts/backup_redis.sh` fuerza un guardado y comprime el volumen completo (RDB + AOF) con rotación, ejecutado por cron cada 3 horas:
+
+```
+0 */3 * * * /ruta/al/proyecto/scripts/backup_redis.sh >> ~/backups_redis/backup.log 2>&1
+```
+
+Como respaldo independiente del servidor, se exporta además el CSV del panel de administración periódicamente. La restauración se realiza deteniendo el contenedor de Redis, reemplazando el volumen con una copia y reiniciando.
 
 ## 🖨️ Generación de Cartelería (Física)
 

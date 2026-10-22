@@ -16,7 +16,7 @@ import time
 import re
 
 # Para evitar que alguien se le ocurra usar un correo que no sea de la UAM para probar el sistema,
-PATRON_CORREO_UAM = re.compile(r'^[a-zA-Z0-9_.+-]+@(estudiante\.uam\.es|uam\.es)$')
+PATRON_CORREO_UAM = re.compile(r'^[a-zA-Z0-9_.+-]+@(estudiante\.uam\.es|alumni\.uam\.es|inv\.uam\.es|externo\.uam\.es|uam\.es)$')
 
 phishing_bp = Blueprint('phishing', __name__)
 

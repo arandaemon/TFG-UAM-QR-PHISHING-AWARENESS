@@ -48,7 +48,7 @@
             font-family: inherit;
         }
         .btn-action:hover { background: var(--accent-cyan); color: #000; box-shadow: 0 0 10px rgba(0, 255, 255, 0.5); }
-        
+
         .btn-danger { color: var(--accent-magenta); border-color: var(--accent-magenta); background: transparent; }
         .btn-danger:hover { background: var(--accent-magenta); color: #000; box-shadow: 0 0 10px rgba(255, 0, 127, 0.5); }
 
@@ -120,9 +120,9 @@
             }
             .facultades-grid {
                 /* Sobreescribimos el 320px para que se adapte al 100% de la pantalla */
-                grid-template-columns: 1fr; 
+                grid-template-columns: 1fr;
             }
-            
+
             .kpi-number { font-size: 1.5rem; }
             .container { padding: 0 10px; }
         }
@@ -148,10 +148,10 @@
             <img src="{{ url_for('static', filename='img/logo.jpg') }}" alt="Logo Asociación SEIF" class="logo-seif">
             <h1>Dashboard de Auditoría - SEIF</h1>
         </div>
-        
+
         <div class="header-actions">
             <button type="button" class="btn-action btn-danger" onclick="abrirModalBorrar()">Borrar Datos</button>
-            
+
             <a href="{{ url_for('admin.admin_stats_csv') }}" class="btn-action">Descargar (CSV)</a>
             <a href="#" id="btn-logout" class="btn-action" style="border-color: #555; color: #aaa;">Salir</a>
         </div>
@@ -371,6 +371,8 @@
             <form action="{{ url_for('admin.admin_reset_db') }}" method="POST">
                 <input type="text" id="input-confirmacion" name="confirmacion" autocomplete="off"
                        placeholder="Escribe la frase para confirmar" class="modal-input">
+                <input type="password" id="input-pass-borrado" name="pass_borrado" autocomplete="off"
+                       placeholder="Contraseña de borrado" class="modal-input">
                 <div class="modal-actions">
                     <button type="button" class="btn-action" onclick="cerrarModalBorrar()">Cancelar</button>
                     <button type="submit" id="btn-confirmar-borrar" class="btn-action btn-danger" disabled>Borrar definitivamente</button>
@@ -384,16 +386,22 @@
         function abrirModalBorrar() {
             var m = document.getElementById('modal-borrar');
             var i = document.getElementById('input-confirmacion');
-            m.classList.add('open'); i.value = ''; i.focus();
+            var p = document.getElementById('input-pass-borrado');
+            m.classList.add('open'); i.value = ''; p.value = ''; i.focus();
             document.getElementById('btn-confirmar-borrar').disabled = true;
         }
         function cerrarModalBorrar() {
             document.getElementById('modal-borrar').classList.remove('open');
         }
-        document.getElementById('input-confirmacion').addEventListener('input', function () {
+        // El boton solo se activa con la frase correcta Y la contraseña rellena.
+        function revisarBotonBorrar() {
+            var frase = document.getElementById('input-confirmacion').value.trim().toUpperCase();
+            var pass = document.getElementById('input-pass-borrado').value;
             document.getElementById('btn-confirmar-borrar').disabled =
-                (this.value.trim().toUpperCase() !== FRASE_BORRADO.toUpperCase());
-        });
+                (frase !== FRASE_BORRADO.toUpperCase() || pass.length === 0);
+        }
+        document.getElementById('input-confirmacion').addEventListener('input', revisarBotonBorrar);
+        document.getElementById('input-pass-borrado').addEventListener('input', revisarBotonBorrar);
         document.getElementById('modal-borrar').addEventListener('click', function (e) {
             if (e.target === this) cerrarModalBorrar();
         });
